@@ -120,8 +120,8 @@ def record_tip_by_t_username(t_username_sender, t_username_receiver, amount, cur
 
     # if balance_sender + fee < amount:
     #     return TIP_INSUFFICIENT_BALANCE.format(balance=balance_sender, max=balance_sender)
-    record_transaction_by_t_username(t_username_sender, -fee, f'you paid a fee for tipping telegram@{t_username_sender} ⛽💸', currency)
-    record_transaction_by_t_username(t_username_sender, -amount, f'you tip telegram@{t_username_sender} 💸', currency)
+    record_transaction_by_t_username(t_username_sender, -fee, f'you paid a fee for tipping telegram@{t_username_receiver} ⛽💸', currency)
+    record_transaction_by_t_username(t_username_sender, -amount, f'you tip telegram@{t_username_receiver} 💸', currency)
     record_transaction_by_t_username(t_username_receiver, amount, f'you were tip by telegram@{t_username_sender} 🤑', currency)
 
     return f"Tip successful! @{t_username_sender} tipped @{t_username_receiver} {amount} ${currency}."
