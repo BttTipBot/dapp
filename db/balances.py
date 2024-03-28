@@ -6,10 +6,10 @@ def create_or_update_balance(user_id, currency="BTT", amount=0):
     balance_ref = db.collection('BALANCE').where('user_id','==', user_id).where('currency', '==', currency)
     balance_data = balance_ref.get()
 
-    if balance_data.exists:
+    if balance_data:
         balance_ref.update({'balance': amount})
     else:
-        balance_ref.add({
+        db.collection('BALANCE').add({
             'user_id': user_id,
             'currency': currency,
             'balance': amount
@@ -66,6 +66,6 @@ def get_balance_by_t_username(t_username, currency="BTT"):
         balance_ref = db.collection('BALANCE').where('user_id','==', user_id).where('currency', '==', currency)
         balance_data = balance_ref.get()
         if len(balance_data) > 0:
-            return balance_data[0].get('balance')
-    return '0'
+            return int(balance_data[0].get('balance'))
+    return 0
 

@@ -33,10 +33,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                             t_is_bot=user.is_bot, 
                             d_username='')
         if result == USER_NEW_USER_ADDED:
-            message_text = DEFAULT_WELCOME_BACK_MESSAGE.format(user=user.username)
+            message_text = DEFAULT_WELCOME_MESSAGE.format(user=user.username)
             record_welcome_bonus_by_t_username(user.username)
         else:
-            message_text = DEFAULT_WELCOME_MESSAGE.format(user=user.username)
+            message_text = DEFAULT_WELCOME_BACK_MESSAGE.format(user=user.username)
 
         # Create a simple keyboard
         keyboard = [[WALLET_BUTTON, WITHDRAW_BUTTON ], [USER_HELP_BUTTON, USER_BALANCE_BUTTON, USER_HISTORY_BUTTON]]

@@ -11,7 +11,7 @@ from constants.parameters import PARAMETER_WELCOME_BONUS, PARAMETER_TIP_FEE_BTT
 from utils.convert import convert_to_int
 from utils.shorts import get_short_tx
 
-from constants.globals import TIP_INSUFFICIENT_BALANCE, USER_NOT_FOUND, USER_WELCOME_BONUS_MESSAGE
+from constants.globals import USER_NEW_USER_ADDED, USER_WELCOME_BONUS_MESSAGE
 
 def record_transaction_by_t_username(t_username, amount, transaction_type='transaction telegram', currency='BTT'):
     user_ref = db.collection('USERS').where('t_username', '==', t_username).limit(1)
@@ -108,8 +108,12 @@ def withdraw_balance_by_t_username(tx, t_username, amount, currency='BTT'):
 
 def record_tip_by_t_username(t_username_sender, t_username_receiver, amount, currency='BTT'):
     # Record the tip in the HISTORY collection
-    sender = get_or_create_user(t_username=t_username_sender)
+    result = get_or_create_user(t_username=t_username_sender)
+    if result == USER_NEW_USER_ADDED:
+        record_welcome_bonus_by_t_username(t_username_sender)
     receiver = get_or_create_user(t_username=t_username_receiver)
+    if result == USER_NEW_USER_ADDED:
+        record_welcome_bonus_by_t_username(t_username_sender)
 
     # balance_sender = get_balance_by_t_username(t_username_sender, currency)
     fee = int(get_param(PARAMETER_TIP_FEE_BTT))
@@ -127,4 +131,5 @@ def record_welcome_bonus_by_t_username(t_username, currency='BTT'):
     # PARAMETER
     value_param = get_param(PARAMETER_WELCOME_BONUS)
     # Record the welcome bonus in the HISTORY collection
+    
     record_transaction_by_t_username(t_username, value_param, USER_WELCOME_BONUS_MESSAGE.format(amount=value_param) , currency)

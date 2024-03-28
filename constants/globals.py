@@ -56,6 +56,6 @@ MESSAGE_WALLET_TRANSFER_ON_CHAIN = "Transfer $BTT to another wallet. Please writ
 MESSAGE_WALLET_TOP_UP = "Top up your telegram/discord wallet with tips.\n\n We will withdraw the amount from chain and bring it to your balance. \n\n Please write the amount to top up. \n\n Example: 1000, 1k, 1m, 1b"
 
 # Default values:
-DEFAULT_WELCOME_MESSAGE = "👋 Welcome back @{user} to the BTT TIP community!"
-DEFAULT_WELCOME_BACK_MESSAGE = "👋 Welcome to the BTT TIP community @{user}!"
+DEFAULT_WELCOME_BACK_MESSAGE = "👋 Welcome back @{user} to the BTT TIP community!"
+DEFAULT_WELCOME_MESSAGE = "👋 Welcome to the BTT TIP community @{user}!"
 DEFAULT_NO_FALLBACK_MESSAGE = "Sorry, I didn't understand that command."

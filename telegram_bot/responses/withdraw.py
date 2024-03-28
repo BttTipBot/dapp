@@ -45,7 +45,7 @@ async def withdraw_btt(update, context):
     # Check if the command was sent in a private chat
     if update.message.chat.type == 'private':
         balance = get_balance_by_t_username(user.username)
-        min_balance = get_param(PARAMETER_MINIMUM_WITHDRAW_BTT)
+        min_balance = int(get_param(PARAMETER_MINIMUM_WITHDRAW_BTT))
 
         if balance < min_balance:
             await context.bot.send_message(user.id, RESPONSE_WITHDRAW_MINIMUM.format(amount=min_balance, balance=balance))
@@ -82,7 +82,7 @@ async def withdraw_btt_in_wallet(update, context):
                     if my_wallet is not None:
                         withdraw_amount_int = convert_to_int(withdraw_amount)
                         balance = get_balance_by_t_username(user.username)
-                        min_balance = get_param(PARAMETER_MINIMUM_WITHDRAW_BTT)
+                        min_balance = int(get_param(PARAMETER_MINIMUM_WITHDRAW_BTT))
                         if balance < min_balance or withdraw_amount_int > balance or withdraw_amount_int < min_balance:
                             reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
                             await context.bot.send_message(user.id, RESPONSE_WITHDRAW_MINIMUM.format(amount=min_balance, balance=balance), reply_markup=reply_markup)
@@ -127,7 +127,7 @@ async def withdraw_btt_in_address(update, context):
             else:
                 withdraw_amount_int = convert_to_int(withdraw_amount)
                 balance = get_balance_by_t_username(user.username)
-                min_balance = get_param(PARAMETER_MINIMUM_WITHDRAW_BTT)
+                min_balance = int(get_param(PARAMETER_MINIMUM_WITHDRAW_BTT))
                 if balance < min_balance or withdraw_amount_int > balance or withdraw_amount_int < min_balance:
                     reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
                     await context.bot.send_message(user.id, RESPONSE_WITHDRAW_MINIMUM.format(amount=min_balance, balance=balance), reply_markup=reply_markup)

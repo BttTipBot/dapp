@@ -33,7 +33,7 @@ from .responses.start import start
 from .responses.wallet import wallet_private, wallet_delete, wallet_deposit, wallet_topup, wallet_withdraw, wallet_onchain_transfer
 from .responses.wallet_new import wallet_new, wallet_import_address, wallet_generate_address
 from .responses.tip import tip, tipOnChain
-from .responses.hi import good_morning, good_night
+from .responses.hi import good_morning, good_night, hello
 from .responses.balance import balance
 from .responses.history import history
 from .responses.withdraw import withdraw_btt, withdraw_btt_in_address, withdraw_btt_in_wallet
@@ -75,7 +75,7 @@ def run_bot_telegram() -> None:
 
     # Register the handlers commands
     application.add_handler(CommandHandler('start', start))
-    application.add_handler(CommandHandler('hi', start))
+    application.add_handler(CommandHandler('hi', hello))
     application.add_handler(CommandHandler('gm', good_morning))
     application.add_handler(CommandHandler('image', image))
     application.add_handler(CommandHandler('gn', good_night))

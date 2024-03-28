@@ -4,6 +4,7 @@ import string
 
 from db.firebase import db
 from constants.globals import USER_NEW_USER_ADDED, USER_ERROR_USER_EXISTS
+from db.balances import create_or_update_balance
 
 def get_link_code_by_t_username(t_username):
     # Retrieve the link code based on t_username
@@ -43,7 +44,7 @@ def setup_user(t_first_name='', t_last_name='', t_username='', t_id_telegram='',
         link_code = generate_link_code()
 
         # Insert the new user into the USERS collection with the generated link code
-        db.collection('USERS').add({
+        new_user_ref = db.collection('USERS').add({
             't_first_name': t_first_name,
             't_last_name': t_last_name,
             't_username': t_username,
@@ -53,6 +54,9 @@ def setup_user(t_first_name='', t_last_name='', t_username='', t_id_telegram='',
             'command': 'start',
             'link_code': link_code
         })
+        # Get from reference the user id
+        user_id = new_user_ref[1].id
+        create_or_update_balance(user_id)
         return USER_NEW_USER_ADDED
 
 
@@ -80,8 +84,9 @@ def get_or_create_user(t_first_name='', t_last_name='', t_username='', t_id_tele
         })
 
         # Retrieve the newly created user data
-        new_user_data = new_user_ref.get().to_dict()
-        return new_user_data
+        user_id = new_user_ref[1].id
+        create_or_update_balance(user_id)
+        return USER_NEW_USER_ADDED
 
 #Get the command of the user
 def get_command_by_t_username(t_username):

@@ -38,10 +38,10 @@ class Start(commands.Cog):
                                 t_is_bot=user.bot, 
                                 d_username=user.name)
             if result == USER_NEW_USER_ADDED:
-                message_text = DEFAULT_WELCOME_BACK_MESSAGE.format(user=user.name)
+                message_text = DEFAULT_WELCOME_MESSAGE.format(user=user.name)
                 record_welcome_bonus_by_t_username(user.name)
             else:
-                message_text = DEFAULT_WELCOME_MESSAGE.format(user=user.name)
+                message_text = DEFAULT_WELCOME_BACK_MESSAGE.format(user=user.name)
             
             # Update the command state
             previous_state = '/start'
