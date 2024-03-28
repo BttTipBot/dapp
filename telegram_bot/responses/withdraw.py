@@ -122,7 +122,7 @@ async def withdraw_btt_in_address(update, context):
             address = update.message.text.split(" ")[0]
             withdraw_amount = update.message.text.split(" ")[1]
 
-            if is_int(withdraw_amount) == False or is_address(address):
+            if is_int(withdraw_amount) == False or is_address(address) == False:
                 await update.message.reply_text(TEXT_INVALID_AMOUNT_ADDRESS.format(text=withdraw_amount) + EXAMPLE_ADDRESS_AMOUNT)
             else:
                 withdraw_amount_int = convert_to_int(withdraw_amount)
