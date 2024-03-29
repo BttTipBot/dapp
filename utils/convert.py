@@ -21,3 +21,20 @@ def is_int(amount):
         return True
     else:
         return False
+
+# A function which help displys big numbers in a more readable format (e.g. 1,000,000 instead of 1000000)
+def human_format(num):
+    # Format the number to a string with commas every 3 digits
+    num_l = float(num)
+    magnitude = 0
+    while abs(num_l) >= 1000:
+        magnitude += 1
+        num_l /= 1000.0
+    aprox = '%.2f%s' % (num_l, ['', 'K', 'M', 'B', 'T'][magnitude])
+
+    # Create a string with commas every 3 digits from num
+    str_num = str(num)
+    comma = "{:,}".format(int(str_num.split(".")[0]))
+    
+                        
+    return f'{comma} ({aprox})'

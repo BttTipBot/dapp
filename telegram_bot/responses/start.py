@@ -39,8 +39,11 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             message_text = DEFAULT_WELCOME_BACK_MESSAGE.format(user=user.username)
 
         # Create a simple keyboard
-        keyboard = [[WALLET_BUTTON, WITHDRAW_BUTTON ], [USER_HELP_BUTTON, USER_BALANCE_BUTTON, USER_HISTORY_BUTTON]]
-        reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+        if update.message.chat.type == 'private':
+            keyboard = [[WALLET_BUTTON, WITHDRAW_BUTTON ], [USER_HELP_BUTTON, USER_BALANCE_BUTTON, USER_HISTORY_BUTTON]]
+            reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+        else:
+            reply_markup = None
 
         # Update the command state
         previous_state = '/start'

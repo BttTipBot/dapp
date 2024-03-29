@@ -8,7 +8,7 @@ from db.wallets import get_all_wallets_by_t_username
 from blockchain.tip_contract import get_tip_balance
 from blockchain.tx import check_tx_status
 from utils.wallet import is_address, get_url_by_tx
-from utils.convert import is_int, convert_to_int
+from utils.convert import is_int, convert_to_int, human_format
 from utils.jokes import get_tip_joke_text_and_animation
 from constants.parameters import PARAMETER_MIN_AMOUNT_JOKE
 from db.parameters import get_param
@@ -46,7 +46,7 @@ async def tip(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     fee = int(get_param(PARAMETER_TIP_FEE_BTT))
 
     if balance_sender + fee < amount_int:
-        await update.message.reply_text(TIP_INSUFFICIENT_BALANCE.format(balance=balance_sender, max=balance_sender))
+        await update.message.reply_text(TIP_INSUFFICIENT_BALANCE.format(balance=human_format(balance_sender), max=human_format(balance_sender)))
         return
 
     result = record_tip_by_t_username(sender.username, receiver, amount_int)

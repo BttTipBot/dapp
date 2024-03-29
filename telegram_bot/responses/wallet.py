@@ -2,7 +2,7 @@
 from telegram import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
 
 from steps.command_steps import is_in_steps, get_step, get_arguments, add_step
-from utils.convert import is_int, convert_to_int
+from utils.convert import is_int, convert_to_int, human_format
 from utils.qr_image import qrcode_create
 from utils.wallet import get_wallet_full_name, get_url_by_tx
 from blockchain.wallet import get_balance, transfer_eth
@@ -118,7 +118,7 @@ async def wallet_options(update, context):
             reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
 
             await update.message.reply_photo(photo=img, 
-                                             caption= MESSAGE_WALLET_MENU.format(wallet=my_wallet['name'], address=my_wallet['address'], balance=balance, balance_tips=balance_tips),
+                                             caption= MESSAGE_WALLET_MENU.format(wallet=my_wallet['name'], address=my_wallet['address'], balance=human_format(balance), balance_tips=human_format(balance_tips)),
                                              parse_mode='Markdown',
                                              reply_markup=reply_markup)
 
@@ -150,7 +150,7 @@ async def wallet_deposit(update, context):
                     deposited_amount_int = convert_to_int(deposited_amount)
                     if fee_needed + deposited_amount_int > balance:
                         max = balance - fee_needed
-                        await update.message.reply_text(MESSAGE_WALLET_INSUFFICIENT_BALANCE.format(balance=balance, fee=fee_needed, max=max))
+                        await update.message.reply_text(MESSAGE_WALLET_INSUFFICIENT_BALANCE.format(balance=human_format(balance), fee=fee_needed, max=max))
                     else:
 
                         # Deposit the amount to the wallet
@@ -186,7 +186,7 @@ async def wallet_deposit(update, context):
                 fee_needed = int(get_param(PARAMETER_MINIMUM_FEES))
 
                 if fee_needed > balance:
-                    await update.message.reply_text(MESSAGE_WALLET_INSUFFICIENT_FEE.format(fee=fee_needed))
+                    await update.message.reply_text(MESSAGE_WALLET_INSUFFICIENT_FEE.format(fee=human_format(fee_needed)))
                 else:
                     await update.message.reply_text(MESSAGE_WALLET_DEPOSIT)
 
@@ -217,7 +217,7 @@ async def wallet_withdraw(update, context):
                         withdraw_amount_int = convert_to_int(withdraw_amount)
                         if withdraw_amount_int > balance:
                             max = balance
-                            await update.message.reply_text(MESSAGE_WALLET_INSUFFICIENT_TIP.format(balance=balance, max=max))
+                            await update.message.reply_text(MESSAGE_WALLET_INSUFFICIENT_TIP.format(balance=human_format(balance), max=max))
                         else:
                             # Deposit the amount to the wallet
                             tx = withdraw_tip(withdraw_amount_int, my_wallet['address'], my_wallet['pk'])
@@ -230,11 +230,11 @@ async def wallet_withdraw(update, context):
 
                             if check_tx_status(tx) == True:
                                 await update.message.reply_html(
-                                    RESPONSE_WALLET_WITHDRAW_SUCCESS.format(amount=withdraw_amount_int, url=url),
+                                    RESPONSE_WALLET_WITHDRAW_SUCCESS.format(amount=human_format(withdraw_amount_int), url=url),
                                     reply_markup=reply_markup)
                             else:
                                 await update.message.reply_html(
-                                    RESPONSE_WALLET_WITHDRAW_FAILED.format(amount=withdraw_amount_int, url=url),
+                                    RESPONSE_WALLET_WITHDRAW_FAILED.format(amount=human_format(withdraw_amount_int), url=url),
                                     reply_markup=reply_markup)
                             
                     else:
@@ -256,7 +256,7 @@ async def wallet_withdraw(update, context):
                 fee_needed = int(get_param(PARAMETER_MINIMUM_FEES))
 
                 if fee_needed > balance:
-                    await update.message.reply_text(MESSAGE_WALLET_INSUFFICIENT_FEE.format(fee=fee_needed))
+                    await update.message.reply_text(MESSAGE_WALLET_INSUFFICIENT_FEE.format(fee=human_format(fee_needed)))
                 else:
                     await update.message.reply_text(MESSAGE_WALLET_WITHDRAW)
 
@@ -287,7 +287,7 @@ async def wallet_onchain_transfer(update, context):
                     amount_int = convert_to_int(amount)
                     if fee_needed + amount_int > balance:
                         max = balance - fee_needed
-                        await update.message.reply_text(MESSAGE_WALLET_INSUFFICIENT_BALANCE.format(balance=balance, fee=fee_needed, max=max))
+                        await update.message.reply_text(MESSAGE_WALLET_INSUFFICIENT_BALANCE.format(balance=human_format(balance), fee=human_format(fee_needed), max=human_format(max)))
                     else:
                         # Deposit the amount to the wallet
                         tx = transfer_eth(my_wallet['address'], address, amount_int, my_wallet['pk'])
@@ -300,11 +300,11 @@ async def wallet_onchain_transfer(update, context):
 
                         if check_tx_status(tx) == True:
                             await update.message.reply_html(
-                                RESPONSE_WALLET_TRANSFER_SUCCESS.format(amount=amount_int, url=url),
+                                RESPONSE_WALLET_TRANSFER_SUCCESS.format(amount=human_format(amount_int), url=url),
                                 reply_markup=reply_markup)
                         else:
                             await update.message.reply_html(
-                                RESPONSE_WALLET_TRANSFER_FAILED.format(amount=amount_int, url=url),
+                                RESPONSE_WALLET_TRANSFER_FAILED.format(amount=human_format(amount_int), url=url),
                                 reply_markup=reply_markup)
                             
         else:
@@ -324,7 +324,7 @@ async def wallet_onchain_transfer(update, context):
                 fee_needed = int(get_param(PARAMETER_MINIMUM_FEES))
 
                 if fee_needed > balance:
-                    await update.message.reply_text(MESSAGE_WALLET_INSUFFICIENT_FEE.format(fee=fee_needed))
+                    await update.message.reply_text(MESSAGE_WALLET_INSUFFICIENT_FEE.format(fee=human_format(fee_needed)))
                 else:
                     await update.message.reply_text(MESSAGE_WALLET_TRANSFER_ON_CHAIN)
 
@@ -352,7 +352,7 @@ async def wallet_topup(update, context):
                     withdraw_amount_int = convert_to_int(withdraw_amount)
                     if withdraw_amount_int > balance:
                         max = balance
-                        await update.message.reply_text(MESSAGE_WALLET_INSUFFICIENT_TIP.format(balance=balance, max=max))
+                        await update.message.reply_text(MESSAGE_WALLET_INSUFFICIENT_TIP.format(balance=human_format(balance), max=human_format(max)))
                     else:
                         # Deposit the amount to the wallet
                         set_command_by_t_username(user.username, WALLET_SELECT_BUTTON + wallet_name)
@@ -361,9 +361,9 @@ async def wallet_topup(update, context):
                         reply_markup = ReplyKeyboardMarkup([[get_wallet_full_name(my_wallet)], [USER_MAIN_MENU_BUTTON, WALLET_BUTTON]], resize_keyboard=True)
                         if check_tx_status(tx) == True:
                             top_up_balance_by_t_username(tx, user.username, withdraw_amount_int)
-                            await update.message.reply_html(RESPONSE_WALLET_TOPUP_SUCCESS.format(amount=withdraw_amount_int, url=url), reply_markup=reply_markup)
+                            await update.message.reply_html(RESPONSE_WALLET_TOPUP_SUCCESS.format(amount=human_format(withdraw_amount_int), url=url), reply_markup=reply_markup)
                         else:
-                            await update.message.reply_html(RESPONSE_WALLET_TOPUP_FAILED.format(amount=withdraw_amount_int, url=url), reply_markup=reply_markup)
+                            await update.message.reply_html(RESPONSE_WALLET_TOPUP_FAILED.format(amount=human_format(withdraw_amount_int), url=url), reply_markup=reply_markup)
         else:
             command = add_step(update.message.text, "STARTED_TRANSFER")
             set_command_by_t_username(user.username, command)
@@ -381,7 +381,7 @@ async def wallet_topup(update, context):
                 fee_needed = int(get_param(PARAMETER_MINIMUM_FEES))
 
                 if fee_needed > balance:
-                    await update.message.reply_text(MESSAGE_WALLET_INSUFFICIENT_FEE.format(fee=fee_needed))
+                    await update.message.reply_text(MESSAGE_WALLET_INSUFFICIENT_FEE.format(fee=human_format(fee_needed)))
                 else:
                     await update.message.reply_text(MESSAGE_WALLET_TOP_UP)
 

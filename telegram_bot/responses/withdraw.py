@@ -2,7 +2,7 @@
 from telegram import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
 
 from steps.command_steps import is_in_steps, get_step, get_arguments, add_step
-from utils.convert import is_int, convert_to_int
+from utils.convert import is_int, convert_to_int, human_format
 from utils.wallet import get_wallet_full_name, get_url_by_tx, get_my_wallet_t, is_address
 from utils.qr_image import qrcode_create
 from blockchain.wallet import create_wallet, get_address_and_private_key, get_balance, transfer_eth
@@ -48,7 +48,7 @@ async def withdraw_btt(update, context):
         min_balance = int(get_param(PARAMETER_MINIMUM_WITHDRAW_BTT))
 
         if balance < min_balance:
-            await context.bot.send_message(user.id, RESPONSE_WITHDRAW_MINIMUM.format(amount=min_balance, balance=balance))
+            await context.bot.send_message(user.id, RESPONSE_WITHDRAW_MINIMUM.format(amount=human_format(min_balance), balance=human_format(balance)))
         else:
             wallets = get_all_wallets_by_t_username(user.username)
             if wallets == []:
@@ -85,7 +85,7 @@ async def withdraw_btt_in_wallet(update, context):
                         min_balance = int(get_param(PARAMETER_MINIMUM_WITHDRAW_BTT))
                         if balance < min_balance or withdraw_amount_int > balance or withdraw_amount_int < min_balance:
                             reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
-                            await context.bot.send_message(user.id, RESPONSE_WITHDRAW_MINIMUM.format(amount=min_balance, balance=balance), reply_markup=reply_markup)
+                            await context.bot.send_message(user.id, RESPONSE_WITHDRAW_MINIMUM.format(amount=human_format(min_balance), balance=human_format(balance)), reply_markup=reply_markup)
                         else:
                             # Withdraw the amount
                             set_command_by_t_username(user.username, WALLET_SELECT_BUTTON + my_wallet['name'])
@@ -95,10 +95,10 @@ async def withdraw_btt_in_wallet(update, context):
                             if check_tx_status(tx) == True:
                                 withdraw_balance_by_t_username(tx, user.username, withdraw_amount_int)
                                 reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
-                                await update.message.reply_html(RESPONSE_WITHDRAW_SUCCESS.format(amount=withdraw_amount_int, url=url), reply_markup=reply_markup)
+                                await update.message.reply_html(RESPONSE_WITHDRAW_SUCCESS.format(amount=human_format(withdraw_amount_int), url=url), reply_markup=reply_markup)
                             else:
                                 reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
-                                await update.message.reply_text(RESPONSE_WITHDRAW_FAILED.format(amount=withdraw_amount_int, url=url), reply_markup=reply_markup)
+                                await update.message.reply_text(RESPONSE_WITHDRAW_FAILED.format(amount=human_format(withdraw_amount_int), url=url), reply_markup=reply_markup)
 
         else:
             wallet_name = update.message.text.replace(WITHDRAW_BUTTON_ON_ACCOUNT, "")
@@ -123,14 +123,14 @@ async def withdraw_btt_in_address(update, context):
             withdraw_amount = update.message.text.split(" ")[1]
 
             if is_int(withdraw_amount) == False or is_address(address) == False:
-                await update.message.reply_text(TEXT_INVALID_AMOUNT_ADDRESS.format(text=withdraw_amount) + EXAMPLE_ADDRESS_AMOUNT)
+                await update.message.reply_text(TEXT_INVALID_AMOUNT_ADDRESS.format(text=update.message.text) + EXAMPLE_ADDRESS_AMOUNT)
             else:
                 withdraw_amount_int = convert_to_int(withdraw_amount)
                 balance = get_balance_by_t_username(user.username)
                 min_balance = int(get_param(PARAMETER_MINIMUM_WITHDRAW_BTT))
                 if balance < min_balance or withdraw_amount_int > balance or withdraw_amount_int < min_balance:
                     reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
-                    await context.bot.send_message(user.id, RESPONSE_WITHDRAW_MINIMUM.format(amount=min_balance, balance=balance), reply_markup=reply_markup)
+                    await context.bot.send_message(user.id, RESPONSE_WITHDRAW_MINIMUM.format(amount=human_format(min_balance), balance=human_format(balance)), reply_markup=reply_markup)
                 else:
                     # Withdraw the amount
                     set_command_by_t_username(user.username, USER_MAIN_MENU_BUTTON)
@@ -140,10 +140,10 @@ async def withdraw_btt_in_address(update, context):
                     if check_tx_status(tx) == True:
                         withdraw_balance_by_t_username(tx, user.username, withdraw_amount_int)
                         reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
-                        await update.message.reply_html(RESPONSE_WITHDRAW_SUCCESS.format(amount=withdraw_amount_int, url=url), reply_markup=reply_markup)
+                        await update.message.reply_html(RESPONSE_WITHDRAW_SUCCESS.format(amount=human_format(withdraw_amount_int), url=url), reply_markup=reply_markup)
                     else:
                         reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
-                        await update.message.reply_text(RESPONSE_WITHDRAW_FAILED.format(amount=withdraw_amount_int, url=url), reply_markup=reply_markup)
+                        await update.message.reply_text(RESPONSE_WITHDRAW_FAILED.format(amount=human_format(withdraw_amount_int), url=url), reply_markup=reply_markup)
 
         else:
             set_command_by_t_username(user.username, WITHDRAW_BUTTON_ON_ADDRESS)

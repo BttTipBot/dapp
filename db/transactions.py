@@ -8,7 +8,7 @@ from db.parameters import get_param
 from db.balances import get_balance_by_t_username
 
 from constants.parameters import PARAMETER_WELCOME_BONUS, PARAMETER_TIP_FEE_BTT
-from utils.convert import convert_to_int
+from utils.convert import human_format
 from utils.shorts import get_short_tx
 
 from constants.globals import USER_NEW_USER_ADDED, USER_WELCOME_BONUS_MESSAGE
@@ -124,7 +124,7 @@ def record_tip_by_t_username(t_username_sender, t_username_receiver, amount, cur
     record_transaction_by_t_username(t_username_sender, -amount, f'you tip telegram@{t_username_receiver} 💸', currency)
     record_transaction_by_t_username(t_username_receiver, amount, f'you were tip by telegram@{t_username_sender} 🤑', currency)
 
-    return f"Tip successful! @{t_username_sender} tipped @{t_username_receiver} {amount} ${currency}."
+    return f"Tip successful! @{t_username_sender} tipped @{t_username_receiver} {human_format(amount)} ${currency}."
 
 def record_welcome_bonus_by_t_username(t_username, currency='BTT'):
 
