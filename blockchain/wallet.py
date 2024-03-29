@@ -66,12 +66,13 @@ def transfer_eth(sender, receiver, amount, private_key):
     # Set the transaction parameters
     nonce = w3.eth.get_transaction_count(sender)
     gasPrice = w3.eth.gas_price
+    addressReceiver = w3.to_checksum_address(receiver)
     value = w3.to_wei(amount, "ether")
 
     # Build the transaction
     tx = {
         'nonce': nonce,
-        'to': receiver,
+        'to': addressReceiver,
         'value': value,
         'gas': 2000000,
         'gasPrice': gasPrice,
