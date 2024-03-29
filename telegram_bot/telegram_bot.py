@@ -75,6 +75,7 @@ def run_bot_telegram() -> None:
 
     # Register the handlers commands
     application.add_handler(CommandHandler('start', start))
+    application.add_handler(CommandHandler('wallets', wallet_private))
     application.add_handler(CommandHandler('hi', hello))
     application.add_handler(CommandHandler('gm', good_morning))
     application.add_handler(CommandHandler('image', image))
