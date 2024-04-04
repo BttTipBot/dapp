@@ -137,6 +137,7 @@ async def tipOnChain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
             return
 
         receiver_wallet = wallets_receiver[0]
+        my_wallet = None
 
         for wallet in wallets:
             balance = get_tip_balance(wallet['address'])

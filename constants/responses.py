@@ -163,8 +163,23 @@ It is still in your wallet.
 
 # Messages Balance
 RESPONSE_BALANCE_MAIN = """
-💰 Balance\n\n
-Your balance is {balance} $BTT 
+💰 Balance Telegram
+- used for /tip 5 $BTT fee
+
+Your balance is {balance} $BTT
+
+"""
+
+RESPONSE_BALANCE_MAIN_ONCHAIN = """
+💰⛓ Balance on BttNetwork
+- used for /tipOnChain 5% fee for $TIP plus blockchain fees
+
+"""
+RESPONSE_BALANCE_MAIN_ONCHAIN_WALLET = """
+Your #{wallet} 🔒
+Balance is {balance} $BTT
+Your tip balance is {balance_tip} $TIP
+
 """
 
 

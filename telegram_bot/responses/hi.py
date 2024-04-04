@@ -9,8 +9,9 @@ from telegram.ext import ContextTypes
 # Define the start function
 async def hello(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     message_text = update.message.text
-    # Check if the bot is tagged in the message or the message is in a private chat
+
     if context.bot.username in message_text or update.message.chat.type == 'private':
+        # Check if the bot is tagged in the message or the message is in a private chat
         """Send a message when the command /start is issued."""
         good_morning_messages = [
             "Greetings!",
@@ -35,11 +36,16 @@ async def hello(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
         user = update.effective_user
 
-        await update.message.reply_animation(
-            animation=file,
-            caption=f"{selected_message} @{user.username}",
-            # reply_markup=ForceReply(selective=True),
-        )
+        if len(context.args) == 1 and context.args[0][0] == '@':
+            await update.message.reply_animation(
+                animation=file,
+                caption=f"{selected_message} @{user.username} says to @{context.args[0][1:]}",
+            )
+        else:
+            await update.message.reply_animation(
+                animation=file,
+                caption=f"{selected_message} @{user.username}",
+            )
 
 
 # Define the start function
@@ -70,12 +76,16 @@ async def good_morning(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         file = open(selected_gif_path, 'rb')
 
         user = update.effective_user
-
-        await update.message.reply_animation(
-            animation=file,
-            caption=f"{selected_message} @{user.username}",
-            # reply_markup=ForceReply(selective=True),
-        )
+        if len(context.args) == 1 and context.args[0][0] == '@':
+            await update.message.reply_animation(
+                animation=file,
+                caption=f"{selected_message} @{user.username} gm to @{context.args[0][1:]}",
+            )
+        else:
+            await update.message.reply_animation(
+                animation=file,
+                caption=f"{selected_message} @{user.username}",
+            )
 
 # Define the start function
 async def good_night(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -105,9 +115,13 @@ async def good_night(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
         file = open(selected_gif_path, 'rb')
 
         user = update.effective_user
-
-        await update.message.reply_animation(
-            animation=file,
-            caption=f"{selected_message} @{user.username}",
-            # reply_markup=ForceReply(selective=True),
-        )
+        if len(context.args) == 1 and context.args[0][0] == '@':
+            await update.message.reply_animation(
+                animation=file,
+                caption=f"{selected_message} @{user.username} gn to @{context.args[0][1:]}",
+            )
+        else:
+            await update.message.reply_animation(
+                animation=file,
+                caption=f"{selected_message} @{user.username}",
+            )
