@@ -7,7 +7,7 @@ from db.users import get_or_create_user
 from db.parameters import get_param
 from db.balances import get_balance_by_t_username
 
-from constants.parameters import PARAMETER_WELCOME_BONUS, PARAMETER_TIP_FEE_BTT
+from constants.parameters import PARAMETER_WELCOME_BONUS, PARAMETER_TIP_FEE_BTT, PARAMETER_RAIN_FEE_BTT, PARAMETER_AIRDROP_FEE_BTT
 from utils.convert import human_format
 from utils.shorts import get_short_tx
 
@@ -125,6 +125,47 @@ def record_tip_by_t_username(t_username_sender, t_username_receiver, amount, cur
     record_transaction_by_t_username(t_username_receiver, amount, f'you were tip by telegram@{t_username_sender} 🤑', currency)
 
     return f"Tip successful! @{t_username_sender} tipped @{t_username_receiver} {human_format(amount)} ${currency}."
+
+
+def record_rain_by_t_username(t_username, users, amount, currency='BTT'):
+    # Record the rain in the HISTORY collection
+
+    fee = int(get_param(PARAMETER_RAIN_FEE_BTT))
+    record_transaction_by_t_username(t_username, -amount, f"🌧️ rain by telegram@{t_username}", currency)
+    record_transaction_by_t_username(t_username, -fee, f'you paid a fee for rain ⛽🌧️', currency)
+
+    user_amount = amount / len(users) 
+
+    str = f"Rain successful! @{t_username} rained {human_format(amount)} ${currency} to {len(users)} users\n\n"
+
+    for user in users:
+        str += f"@{user} {human_format(user_amount)} ${currency}\n"
+        record_transaction_by_t_username(user, user_amount, f"🌧️ rain by telegram@{t_username}", currency)
+
+    return str
+
+def record_airdrop_by_t_username(t_username, users, amount, currency='BTT'):
+    # Record the rain in the HISTORY collection
+
+    fee = int(get_param(PARAMETER_AIRDROP_FEE_BTT))
+    record_transaction_by_t_username(t_username, -amount, f"🪂 airdrop by telegram@{t_username}", currency)
+    record_transaction_by_t_username(t_username, -fee, f'you paid a fee for rain ⛽🪂', currency)
+
+    # user_amount_point
+    print(users)
+    total_points = sum([user['points'] for user in users])
+
+    str = f"Airdrop successful! @{t_username} airdropped {human_format(amount)} ${currency} to {len(users)} users\n\n"
+
+    for user in users:
+        user_amount__by_points = user['points'] / total_points * amount
+        user_amount = int(user_amount__by_points)
+
+        str += f"@{user['t_username']} {human_format(user_amount)} ${currency}\n"
+        record_transaction_by_t_username(user['t_username'], user_amount, f"🪂 airdrop by telegram@{t_username}", currency)
+    return str
+
+
 
 def record_welcome_bonus_by_t_username(t_username, currency='BTT'):
 

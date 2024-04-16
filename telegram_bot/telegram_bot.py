@@ -2,7 +2,7 @@
 import os
 import logging
 from dotenv import load_dotenv
-from telegram import Update, ForceReply, ReplyKeyboardMarkup
+from telegram import Update, ForceReply
 from telegram.ext import Application, CommandHandler, CallbackContext, ContextTypes, MessageHandler, filters
 import asyncio
 
@@ -19,6 +19,7 @@ from constants.globals import (
     WALLET_IMPORT_BUTTON,
     WALLET_GENERATE_BUTTON,
     WALLET_DEPOSIT_BUTTON,
+    WALLET_EXPORT_BUTTON,
     WALLET_TOPUP_BUTTON,
     WALLET_WITHDRAW_BUTTON,
     WALLET_ONCHAIN_TRANSFER_BUTTON,
@@ -30,9 +31,12 @@ from constants.globals import (
 
 # Import the required responses
 from .responses.start import start
-from .responses.wallet import wallet_private, wallet_delete, wallet_deposit, wallet_topup, wallet_withdraw, wallet_onchain_transfer
+from .responses.wallet import wallet_private, wallet_delete, wallet_deposit, wallet_topup, wallet_withdraw, wallet_onchain_transfer, wallet_export
 from .responses.wallet_new import wallet_new, wallet_import_address, wallet_generate_address
 from .responses.tip import tip, tipOnChain
+from .responses.points import points
+from .responses.rain import rain
+from .responses.airdrop import airdrop
 from .responses.hi import good_morning, good_night, hello
 from .responses.balance import balance
 from .responses.history import history
@@ -90,6 +94,9 @@ def run_bot_telegram() -> None:
     application.add_handler(CommandHandler('commands', help_command))
     application.add_handler(CommandHandler('list', help_command))
     application.add_handler(CommandHandler('lst', help_command))
+    application.add_handler(CommandHandler('points', points))
+    application.add_handler(CommandHandler('rain', rain))
+    application.add_handler(CommandHandler('airdrop', airdrop))
 
     # Register all the buttons handlers
     application.add_handler(MessageHandler(filters.Regex(f'^{USER_MAIN_MENU_BUTTON}$'), start))
@@ -101,6 +108,7 @@ def run_bot_telegram() -> None:
     #Wallet
     application.add_handler(MessageHandler(filters.Regex(f'^{WALLET_BUTTON}$'), wallet_private))
 
+    application.add_handler(MessageHandler(filters.Regex(f'{WALLET_EXPORT_BUTTON}'), wallet_export))
     application.add_handler(MessageHandler(filters.Regex(f'{WALLET_DEPOSIT_BUTTON}'), wallet_deposit))
     application.add_handler(MessageHandler(filters.Regex(f'{WALLET_TOPUP_BUTTON}'), wallet_topup))
     application.add_handler(MessageHandler(filters.Regex(f'{WALLET_WITHDRAW_BUTTON}'), wallet_withdraw))

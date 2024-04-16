@@ -1,10 +1,10 @@
-
+import asyncio
 from telegram import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
 
 from steps.command_steps import is_in_steps, get_step, get_arguments, add_step
 from utils.convert import is_int, convert_to_int, human_format
 from utils.qr_image import qrcode_create
-from utils.wallet import get_wallet_full_name, get_url_by_tx
+from utils.wallet import get_wallet_full_name, get_url_by_tx, get_my_wallet_t
 from blockchain.wallet import get_balance, transfer_eth
 from blockchain.tip_contract import get_tip_balance, deposit_tip, withdraw_tip, top_up_tip
 from blockchain.tx import check_tx_status
@@ -17,6 +17,7 @@ from constants.globals import (
     WALLET_BUTTON,
     WALLET_NEW_BUTTON,
     WALLET_SELECT_BUTTON,
+    WALLET_EXPORT_BUTTON,
     WALLET_DEPOSIT_BUTTON,
     WALLET_WITHDRAW_BUTTON,
     WALLET_TOPUP_BUTTON,
@@ -42,6 +43,7 @@ from constants.responses import (
     RESPONSE_WALLET_WITHDRAW_SUCCESS,
     RESPONSE_WALLET_TRANSFER_SUCCESS,
     RESPONSE_WALLET_TOPUP_FAILED,
+    RESPONSE_WALLET_EXPORT,
     RESPONSE_WALLET_DEPOSIT_FAILED,
     RESPONSE_WALLET_WITHDRAW_FAILED,
     RESPONSE_WALLET_TRANSFER_FAILED,
@@ -110,8 +112,8 @@ async def wallet_options(update, context):
             img = qrcode_create(my_wallet['address'])
 
             keyboard = [
-                [WALLET_DEPOSIT_BUTTON + my_wallet['name'], WALLET_TOPUP_BUTTON + my_wallet['name']],
-                [WALLET_WITHDRAW_BUTTON + my_wallet['name'], WALLET_ONCHAIN_TRANSFER_BUTTON + my_wallet['name'], WALLET_DELETE_BUTTON + my_wallet['name']],
+                [WALLET_DEPOSIT_BUTTON + my_wallet['name'], WALLET_TOPUP_BUTTON + my_wallet['name'], WALLET_WITHDRAW_BUTTON + my_wallet['name']],
+                [WALLET_EXPORT_BUTTON + my_wallet['name'], WALLET_ONCHAIN_TRANSFER_BUTTON + my_wallet['name'], WALLET_DELETE_BUTTON + my_wallet['name']],
                 [WALLET_BUTTON]
             ]
 
@@ -122,6 +124,37 @@ async def wallet_options(update, context):
                                              parse_mode='Markdown',
                                              reply_markup=reply_markup)
 
+# Each unique wallet has its own options
+async def wallet_export(update, context):
+    user = update.effective_user
+    # Check if the command was sent in a private chat
+    if update.message.chat.type == 'private':
+        # Get the name of the wallet from the user's response
+        wallets = get_all_wallets_by_t_username(user.username)
+        wallet_name = update.message.text.replace(WALLET_EXPORT_BUTTON, "")
+        my_wallet = get_my_wallet_t(user.username, wallet_name)
+
+        if my_wallet is None or wallets == []:
+            await update.message.reply_text(MESSAGE_WALLET_NOT_FOUND.format(wallet=wallet_name))
+        else:
+            # Let's get the balance of the wallet
+            keyboard = [
+                [WALLET_DEPOSIT_BUTTON + my_wallet['name'], WALLET_TOPUP_BUTTON + my_wallet['name'], WALLET_WITHDRAW_BUTTON + my_wallet['name']],
+                [WALLET_EXPORT_BUTTON + my_wallet['name'], WALLET_ONCHAIN_TRANSFER_BUTTON + my_wallet['name'], WALLET_DELETE_BUTTON + my_wallet['name']],
+                [WALLET_BUTTON]
+            ]
+
+            reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
+
+            # Send an message and delete the message after 10 seconds
+            ret = await update.message.reply_markdown_v2(RESPONSE_WALLET_EXPORT.format(pk=my_wallet['pk']), reply_markup=reply_markup)
+            asyncio.create_task(delete_message_after_delay(update, context, ret, 10))
+
+async def delete_message_after_delay(update, context, message, delay):
+    await asyncio.sleep(delay)
+    await message.delete()
+    await wallet_private(update, context)
+    
 
 async def wallet_deposit(update, context):
     user = update.effective_user

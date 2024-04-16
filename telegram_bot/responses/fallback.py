@@ -3,6 +3,7 @@ from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKe
 from telegram.ext import ContextTypes
 
 from db.users import get_command_by_t_username, set_command_by_t_username
+from db.activity import record_activity
 from .wallet import (
     wallet_options,
     wallet_deposit,
@@ -47,6 +48,7 @@ async def fallback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     """Handle unmatched commands."""
     user = update.effective_user
     command = get_command_by_t_username(user.username)
+    message = update.message.text
 
     # Call the method based on the previous state
 
@@ -86,10 +88,14 @@ async def fallback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -
         else:
             print(f"fallback_handler: command: {command}")
             print(f"fallback_handler: message: {update.message.text}")
-            
+
             set_command_by_t_username(user.username, '/start')
             
             
             reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON, WALLET_BUTTON]], resize_keyboard=True)
 
             await update.message.reply_text("Sorry, I didn't understand that command.", reply_markup=reply_markup)
+    else:
+        chat_id = update.message.chat.id
+        print(f"fallback_handler: message: {message}")
+        record_activity(user.username, chat_id)

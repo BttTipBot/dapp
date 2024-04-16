@@ -10,4 +10,10 @@ async def history(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if context.bot.username in message_text or update.message.chat.type == 'private':
         user = update.effective_user
         historyString = get_history_by_t_username(user.username)
+
+        if len(historyString) == 0:
+            historyString = "No history found"
+        elif len(historyString) > 4096:
+            historyString = historyString[:4090] + '''...'''
+
         await update.message.reply_text(historyString)

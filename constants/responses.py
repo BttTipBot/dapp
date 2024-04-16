@@ -58,6 +58,18 @@ Amount: {amount} $BTT
 
 """
 
+RESPONSE_WALLET_EXPORT= """
+🗝️ Your wallet PK is `{pk}`  
+
+🔒 Do not share your private key with anyone
+❌ DO NOT SHARE your pk with ANYONE
+
+
+💣💣💣 Message self destructs in 10 seconds
+After that you will automatically be redirected to reselect the wallet
+
+"""
+
 RESPONSE_WALLET_DEPOSIT_FAILED = """
 💰❌
 
