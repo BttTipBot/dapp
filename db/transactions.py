@@ -140,6 +140,7 @@ def record_rain_by_t_username(t_username, users, amount, currency='BTT'):
 
     for user in users:
         str += f"@{user} {human_format(user_amount)} ${currency}\n"
+        result = get_or_create_user(t_username=user)
         record_transaction_by_t_username(user, user_amount, f"🌧️ rain by telegram@{t_username}", currency)
 
     return str
@@ -162,6 +163,7 @@ def record_airdrop_by_t_username(t_username, users, amount, currency='BTT'):
         user_amount = int(user_amount__by_points)
 
         str += f"@{user['t_username']} {human_format(user_amount)} ${currency}\n"
+        result = get_or_create_user(t_username=user)
         record_transaction_by_t_username(user['t_username'], user_amount, f"🪂 airdrop by telegram@{t_username}", currency)
     return str
 
