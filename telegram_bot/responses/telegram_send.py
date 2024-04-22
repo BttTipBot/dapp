@@ -3,7 +3,7 @@ from telegram import Update, Animation, ReplyKeyboardMarkup, PhotoSize
 from telegram.error import RetryAfter, TimedOut
 
 
-async def send_animation(update: Update, animation: Animation, caption: str = "", parse_mode: str = "Markdown", reply_markup: ReplyKeyboardMarkup = None):
+async def send_animation(update: Update, animation: Animation, caption: str = "", parse_mode: str = "HTML", reply_markup: ReplyKeyboardMarkup = None):
     try:
         return await update.message.reply_animation(
             animation=animation,
