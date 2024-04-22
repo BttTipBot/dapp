@@ -75,6 +75,7 @@ async def airdrop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await send_animation(
                 update, 
                 animation=file,
+                parse_mode="HTML",
                 caption= str)
 
 

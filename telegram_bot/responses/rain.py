@@ -81,8 +81,10 @@ async def rain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     file = open(selected_gif_path, 'rb')
 
     await send_animation(
+                update,
                 animation=file,
                 caption= str,
+                parse_mode="HTML"
             )
 
 
