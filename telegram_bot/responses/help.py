@@ -4,6 +4,8 @@ from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ContextTypes
 from constants.responses import RESPONSE_HELP_MAIN
 
+from .telegram_send import send_html
+
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /help is issued."""
     
@@ -18,5 +20,5 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("Support Discord", url=SUPPORT_DISCORD_URL)], 
                                              [InlineKeyboardButton("Support Telegram", url=SUPPORT_TELEGRAM_URL)], 
                                              [InlineKeyboardButton("Deposit Website", url=DEPOSIT_WITHOUT_WALLET_URL)]])
-        await update.message.reply_html(RESPONSE_HELP_MAIN.format(urlbot=TIP_BOT_URL), reply_markup=reply_markup)
+        await send_html(update, RESPONSE_HELP_MAIN.format(urlbot=TIP_BOT_URL), reply_markup=reply_markup)
     

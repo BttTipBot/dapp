@@ -38,7 +38,7 @@ from .responses.points import points
 from .responses.rain import rain
 from .responses.airdrop import airdrop
 from .responses.hi import good_morning, good_night, hello
-from .responses.balance import balance
+from .responses.balance import balance, balance_telegram
 from .responses.history import history
 from .responses.withdraw import withdraw_btt, withdraw_btt_in_address, withdraw_btt_in_wallet
 from .responses.help import help_command
@@ -53,19 +53,6 @@ logging.basicConfig(level=logging.INFO)
 
 # Set the bot token
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
-
-# Define the image function
-async def image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Send a message when the command /image is issued."""
-    user = update.effective_user
-
-    file = create_chart()
-
-    await update.message.reply_photo(
-        photo=file,
-        caption="gn!",
-        reply_markup=ForceReply(selective=True),
-    )
 
 # Define the main function
 def run_bot_telegram() -> None:
@@ -82,9 +69,9 @@ def run_bot_telegram() -> None:
     application.add_handler(CommandHandler('wallets', wallet_private))
     application.add_handler(CommandHandler('hi', hello))
     application.add_handler(CommandHandler('gm', good_morning))
-    application.add_handler(CommandHandler('image', image))
     application.add_handler(CommandHandler('gn', good_night))
-    application.add_handler(CommandHandler('balance', balance))
+    application.add_handler(CommandHandler('balance', balance_telegram))
+    application.add_handler(CommandHandler('balanceAll', balance))
     application.add_handler(CommandHandler('history', history))
 
     # Register the tip function

@@ -11,12 +11,14 @@ from db.balances import get_balance_by_t_username
 from constants.parameters import PARAMETER_RAIN_FEE_BTT
 from constants.globals import RAIN_INSUFFICIENT_BALANCE
 
+from .telegram_send import send_text, send_animation
+
 
 # Define the rain function
 async def rain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # The rain is a feature available only in groups
     if update.message.chat.type == 'private':
-        await update.message.reply_text("The rain feature is only available in groups.")
+        await send_text(update, "The rain feature is only available in groups.")
         return
 
 
@@ -24,7 +26,7 @@ async def rain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # users_count = await update.message.chat.get_member_count()
     
     if len(context.args) < 1:
-        await update.message.reply_text('Usage: /rain <amount> [5m/1h/1d]')
+        await send_text(update, 'Usage: /rain <amount> [5m/1h/1d]')
         return
     
     # Get the amount
@@ -37,7 +39,7 @@ async def rain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if is_int(amount):
         amount_int = convert_to_int(amount)
     else:
-        await update.message.reply_text('Invalid amount')
+        await send_text(update, 'Invalid amount')
         return
     
     # Check if the user has the sufficient balance
@@ -46,7 +48,7 @@ async def rain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     fee = int(get_param(PARAMETER_RAIN_FEE_BTT))
 
     if balance_sender + fee < amount_int and amount_int > 0:
-        await update.message.reply_text(RAIN_INSUFFICIENT_BALANCE.format(balance=human_format(balance_sender), max=human_format(balance_sender)))
+        await send_text(update, RAIN_INSUFFICIENT_BALANCE.format(balance=human_format(balance_sender), max=human_format(balance_sender)))
         return
 
     if len(context.args) > 2:
@@ -60,7 +62,7 @@ async def rain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     users = [user['t_username'] for user in users if user['t_username'] != sender.username]
 
     if len(users) == 0:
-        await update.message.reply_text("☒ No active users in the group")
+        await send_text(update, "☒ No active users in the group")
         return
 
     str = record_rain_by_t_username(sender.username, users, amount_int)
@@ -78,7 +80,7 @@ async def rain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     file = open(selected_gif_path, 'rb')
 
-    await update.message.reply_animation(
+    await send_animation(
                 animation=file,
                 caption= str,
             )

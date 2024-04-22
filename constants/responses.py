@@ -5,6 +5,7 @@ INSUFFICIENT_INPUT_AMOUNT = "Insufficient input amount 🤕 \n"
 INVALID_INPUT_AMOUNT = "Invalid input amount 🤕 \n"
 INVALID_ADDRESS_PROVIDED = "Invalid address provided 🤕 \n"
 TEXT_INVALID_AMOUNT = "The {text} could not be parsed as a valid amount. 🤕 \n"
+TEXT_INVALID_TOKEN_SYMBOL = "The {text} could not be parsed as a valid whitelisted symbol. 🤕 \n"
 TEXT_INVALID_AMOUNT_ADDRESS = "The {text} could not be parsed as a valid address fallowed by a valid amount. 🤕 \n"
 
 EXAMPLE_AMOUNT = "\n\n Example: 1000, 1k, 1m, 1b \n"
@@ -18,7 +19,7 @@ RESPONSE_WALLET_DEPOSIT_SUCCESS = """
 
 Deposit successful. 🎉
 
-Amount: {amount} $BTT
+Amount: {amount} {symbol}
 
 <a href='{url}'> View transaction </a>
 
@@ -29,7 +30,7 @@ RESPONSE_WALLET_WITHDRAW_SUCCESS = """
 
 Withdraw successful. 🎉
 
-Amount: {amount} $BTT
+Amount: {amount} {symbol}
 
 <a href='{url}'> View transaction </a>
 
@@ -41,7 +42,7 @@ RESPONSE_WALLET_TRANSFER_SUCCESS = """
 
 Transfer successful. 🎉
 
-Amount: {amount} $BTT
+Amount: {amount} {symbol}
 
 <a href='{url}'> View transaction </a>
 
@@ -52,7 +53,7 @@ RESPONSE_WALLET_TOPUP_SUCCESS = """
 
 Topup successful. 🎉
 
-Amount: {amount} $BTT
+Amount: {amount} {symbol}
 
 <a href='{url}'> View transaction </a>
 
@@ -75,7 +76,7 @@ RESPONSE_WALLET_DEPOSIT_FAILED = """
 
 Deposit failed. 🤕
 
-Amount: {amount} $BTT
+Amount: {amount} {symbol}
 
 <a href='{url}'> View transaction </a>
 
@@ -86,7 +87,7 @@ RESPONSE_WALLET_WITHDRAW_FAILED = """
 
 Withdraw failed. 🤕
 
-Amount: {amount} $BTT
+Amount: {amount} {symbol}
 
 <a href='{url}'> View transaction </a>
 
@@ -98,7 +99,7 @@ RESPONSE_WALLET_TRANSFER_FAILED = """
 
 Transfer failed. 🤕
 
-Amount: {amount} $BTT
+Amount: {amount} {symbol}
 
 <a href='{url}'> View transaction </a>
 
@@ -109,7 +110,7 @@ RESPONSE_WALLET_TOPUP_FAILED = """
 
 Transfer failed. 🤕
 
-Amount: {amount} $BTT
+Amount: {amount} {symbol}
 
 <a href='{url}'> View transaction </a>
 
@@ -157,7 +158,7 @@ RESPONSE_WITHDRAW_SUCCESS = """
 
 Withdrawal successful. 🎉
 
-Amount: {amount} $BTT
+Amount: {amount} {symbol}
 
 <a href='{url}'> View transaction </a>
 """
@@ -167,7 +168,7 @@ RESPONSE_WITHDRAW_FAILED = """
 
 Withdrawal failed. 🤕
 
-Your amount is SAFU {amount} $BTT
+Your amount is SAFU {amount} {symbol}
 It is still in your wallet.
 
 <a href='{url}'> Failed transaction </a>
@@ -177,23 +178,42 @@ It is still in your wallet.
 RESPONSE_BALANCE_MAIN = """
 💰 Balance Telegram
 - used for /tip 5 $BTT fee
+- used for /airdrop 100 $BTT fee
+- used for /rain 100 $BTT fee
 
 Your balance is {balance} $BTT
-
 """
 
 RESPONSE_BALANCE_MAIN_ONCHAIN = """
-💰⛓ Balance on BttNetwork
+
+
+💰⛓ Balance on #BitTorrent
 - used for /tipOnChain 5% fee for $TIP plus blockchain fees
+- used for /airdropOnChain 5% fee for $TIP plus blockchain fees
+- used for /rainOnChain 5% fee for $TIP plus blockchain fees
 
-"""
+Wallets 👛 """
+
 RESPONSE_BALANCE_MAIN_ONCHAIN_WALLET = """
-Your #{wallet} 🔒
-Balance is {balance} $BTT
-Your tip balance is {balance_tip} $TIP
 
+⛓🔒 Your #{wallet} 
+    Balance is {balance} $BTT
 """
 
+RESPONSE_BALANCE_MAIN_ONCHAIN_TIPBOT = """
+
+    TipBot SmartContract 📜🤖
+    Balance is {balance} $BTT
+"""
+RESPONSE_BALANCE_ERC20_TELEGRAM = \
+"""🛫{balance} {symbol} \n"""
+
+RESPONSE_BALANCE_ERC20 = \
+"""    ⛓{balance} {symbol} \n"""
+
+
+RESPONSE_BALANCE_ERC20_TIPBOT = \
+"""        🤖{balance} {symbol} \n"""
 
 
 

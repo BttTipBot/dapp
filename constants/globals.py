@@ -41,7 +41,7 @@ USER_WELCOME_BONUS_MESSAGE = "🎉 You received a welcome bonus of {amount} BTT!
 # Tips Messages
 TIP_RECEIVED_MESSAGE = "🎉 You received a tip of {amount} BTT from @{sender}!"
 TIP_WELCOME_AMOUNT = "🎉 You received a welcome tip of {amount} BTT!"
-TIP_INSUFFICIENT_BALANCE = "Insufficient balance. 🤕 \n\n\n Your balance is {balance} $BTT. Provide a number smaller than {max}"
+TIP_INSUFFICIENT_BALANCE = "Insufficient balance. 🤕 \n\n\n Your balance is {balance} {symbol}. Provide a number smaller than {max}"
 RAIN_INSUFFICIENT_BALANCE = "Insufficient balance. 🤕 \n\n\n Your balance is {balance} $BTT. Provide a number smaller than {max}"
 AIRDROP_INSUFFICIENT_BALANCE = "Insufficient balance. 🤕 \n\n\n Your balance is {balance} $BTT. Provide a number smaller than {max}"
 
@@ -51,10 +51,29 @@ MESSAGE_CHOSE_WALLET = "Choose your wallet:"
 MESSAGE_WALLET_NOT_FOUND = "Wallet not found '{wallet}'. Please select one of the available wallets or create a new one."
 MESSAGE_WALLET_MENU = "Wallet *{wallet}* 💰  \n\n Address `{address}` \n\n  Balance of {balance} $BTT \n\n 💵 Balance Tips on Chain: {balance_tips} $TIP"
 MESSAGE_WALLET_INSUFFICIENT_FEE = "Insufficient balance. 🤕 \n\n\n  You need to have at least {fee} $BTT in your wallet for transaction fee."
-MESSAGE_WALLET_INSUFFICIENT_BALANCE = "Insufficient balance. 🤕 \n\n\n Your balance is {balance} $BTT. \n\n You need to keep at least {fee} $BTT in your wallet. Provide a number smaller than {max}"
-MESSAGE_WALLET_DEPOSIT = "Deposit to your wallet $TIP. \n\n 1 $BTT = 1 $TIP \n\n Please write how many $BTT you want to deposit. \n\n You could use also b (billion), m (million) or k (thousand) as suffixes. \n\n Example: 1000, 1k, 1m, 1b"
+MESSAGE_WALLET_INSUFFICIENT_BALANCE = """
+Insufficient balance. 🤕 
+
+Your balance is {balance} {symbol}
+🙏🏼 Please provide a number within your balance.
+"""
+
+MESSAGE_WALLET_DEPOSIT = """
+Deposit to your wallet $TIP. 
+ 1 $BTT = 1 $TIP \n\n Please write how many $BTT you want to deposit. 
+  
+ You could use also b (billion), m (million) or k (thousand) as suffixes. 
+
+ Example: 1000, 1k, 1m, 1b
+"""
 MESSAGE_WALLET_WITHDRAW = "Withdraw to your wallet $BTT from $TIP. \n\n 1 $BTT = 1 $TIP \n\n Please write how many $TIP you want to withdraw. \n\n You could use also b (billion), m (million) or k (thousand) as suffixes. \n\n Example: 1000, 1k, 1m, 1b"
-MESSAGE_WALLET_INSUFFICIENT_TIP = "Insufficient balance. 🤕 \n\n\n Your balance is {balance} $TIP. Provide a number smaller than {max}"
+
+MESSAGE_WALLET_INSUFFICIENT_TIP = """
+Insufficient balance. 🤕
+ 
+Your balance is {balance} {symbol}
+🙏🏼 Please provide a number within your balance.
+"""
 MESSAGE_WALLET_TRANSFER_ON_CHAIN = "Transfer $BTT to another wallet. Please write the address to transfer the $BTT and the amount. \n\n Example: 0x1234... 1000"
 MESSAGE_WALLET_TOP_UP = "Top up your telegram/discord wallet with tips.\n\n We will withdraw the amount from chain and bring it to your balance. \n\n Please write the amount to top up. \n\n Example: 1000, 1k, 1m, 1b"
 

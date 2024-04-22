@@ -11,16 +11,18 @@ from db.balances import get_balance_by_t_username
 from constants.parameters import PARAMETER_AIRDROP_FEE_BTT
 from constants.globals import AIRDROP_INSUFFICIENT_BALANCE
 
+from .telegram_send import send_animation, send_text
+
 
 # Define the airdrop function
 async def airdrop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # The airdrop is a feature available only in groups
     if update.message.chat.type == 'private':
-        await update.message.reply_text("The airdrop feature is only available in groups.")
+        await send_text(update, "The airdrop feature is only available in groups.")
         return
     
     if len(context.args) < 1:
-        await update.message.reply_text('Usage: /airdrop <amount>')
+        await send_text(update, 'Usage: /airdrop <amount>')
         return
     
     # Get the amount
@@ -33,7 +35,7 @@ async def airdrop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if is_int(amount):
         amount_int = convert_to_int(amount)
     else:
-        await update.message.reply_text('Invalid amount')
+        await send_text(update, 'Invalid amount')
         return
     
     # Check if the user has the sufficient balance
@@ -42,7 +44,7 @@ async def airdrop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     fee = int(get_param(PARAMETER_AIRDROP_FEE_BTT))
 
     if balance_sender + fee < amount_int and amount_int > 0:
-        await update.message.reply_text(AIRDROP_INSUFFICIENT_BALANCE.format(balance=human_format(balance_sender), max=human_format(balance_sender)))
+        await send_text(update, AIRDROP_INSUFFICIENT_BALANCE.format(balance=human_format(balance_sender), max=human_format(balance_sender)))
         return
 
     # Use get Activity by chat id
@@ -52,7 +54,7 @@ async def airdrop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     users = [user for user in users if user['t_username'] != sender.username]
 
     if len(users) == 0:
-        await update.message.reply_text("☒ No active users in the group")
+        await send_text(update, "☒ No active users in the group")
         return
 
     str = record_airdrop_by_t_username(sender.username, users, amount_int)
@@ -70,10 +72,10 @@ async def airdrop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     file = open(selected_gif_path, 'rb')
 
-    await update.message.reply_animation(
+    await send_animation(
+                update, 
                 animation=file,
-                caption= str,
-            )
+                caption= str)
 
 
 

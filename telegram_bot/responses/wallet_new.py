@@ -14,6 +14,8 @@ from constants.globals import (
     USER_MAIN_MENU_BUTTON,
 )
 
+from .telegram_send import send_text
+
 # Wallet goes to 
 # 1. Wallet (wallet_private)
 #   1.1. New Wallet (wallet_new)
@@ -30,7 +32,7 @@ async def wallet_new(update, context):
     if update.message.chat.type == 'private':
         # Let's create a new wallet for the user
         # Ask the user for the name of the wallet
-        await update.message.reply_text("Please choose if you want to import or generate. We recommend to generate a new one", reply_markup=reply_markup)
+        await send_text(update, "Please choose if you want to import or generate. We recommend to generate a new one", reply_markup=reply_markup)
 
 async def wallet_generate_address(update, context):
     user = update.effective_user
@@ -40,7 +42,7 @@ async def wallet_generate_address(update, context):
     if update.message.chat.type == 'private':
         # Let's create a new wallet for the user
         # Ask the user for the name of the wallet
-        await update.message.reply_text("Please input the name of the new wallet")
+        await send_text(update, "Please input the name of the new wallet")
 
 
 async def wallet_generate_address_response(update, context):
@@ -61,7 +63,7 @@ async def wallet_generate_address_response(update, context):
         reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON, WALLET_BUTTON]], resize_keyboard=True)
 
         # Your code here to create a new wallet with the given name
-        await update.message.reply_text(f"New wallet '{wallet_name}' with address {address} created!", reply_markup=reply_markup)
+        await send_text(update, f"New wallet '{wallet_name}' with address {address} created!", reply_markup=reply_markup)
 
 
 async def wallet_import_address(update, context):
@@ -72,7 +74,7 @@ async def wallet_import_address(update, context):
     if update.message.chat.type == 'private':
         # Let's create a new wallet for the user
         # Ask the user for the name of the wallet
-        await update.message.reply_text("Please provide a primary key:")
+        await send_text(update, "Please provide a primary key:")
 
 
 async def wallet_import_address_response_pk(update, context):
@@ -85,7 +87,7 @@ async def wallet_import_address_response_pk(update, context):
         set_command_by_t_username(user.username, WALLET_PK_PROVIDED + wallet_pk)
 
         # Your code here to create a new wallet with the given name
-        await update.message.reply_text(f"Pk provided: {wallet_pk}. Please input the name of the new wallet")
+        await send_text(update, f"Pk provided: {wallet_pk}. Please input the name of the new wallet")
 
 
 async def wallet_import_address_response_name(update, context, pk):
@@ -97,7 +99,7 @@ async def wallet_import_address_response_name(update, context, pk):
 
         if len(pk) != 66: 
             set_command_by_t_username(user.username, WALLET_IMPORT_BUTTON)
-            await update.message.reply_text(f"Invalid pk provided: {pk}. Please input the primary key again.")
+            await send_text(update, f"Invalid pk provided: {pk}. Please input the primary key again.")
             return
 
         # Now let's create a new wallet for the user
@@ -113,4 +115,4 @@ async def wallet_import_address_response_name(update, context, pk):
         reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON, WALLET_BUTTON]], resize_keyboard=True)
 
         # Your code here to create a new wallet with the given name
-        await update.message.reply_text(f"New wallet '{wallet_name}' with address {address} address!", reply_markup=reply_markup)
+        await send_text(update, f"New wallet '{wallet_name}' with address {address} address!", reply_markup=reply_markup)

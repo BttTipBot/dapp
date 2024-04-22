@@ -15,7 +15,7 @@ from constants.globals import (
     DEFAULT_WELCOME_MESSAGE
 )
 
-
+from .telegram_send import send_html
 
 # Define the start function 
 # If the user is new, add the user to the database and send a welcome message
@@ -50,5 +50,5 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         set_command_by_t_username(user.username, previous_state)
 
         # Send the message with the keyboard
-        await update.message.reply_html(message_text, reply_markup=reply_markup)
+        await send_html(update, message_text, reply_markup=reply_markup)
 

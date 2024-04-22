@@ -28,7 +28,7 @@ def get_history_by_t_username(t_username):
         if history_data:
             str = f"@{t_username} history\n"
             for trx in history_data:
-                str += f"{trx.get('amount')} ${trx.get('currency')} {trx.get('transaction_type')} {trx.get('date_recorded')}\n"
+                str += f"{trx.get('amount')} {trx.get('currency')} {trx.get('transaction_type')} {trx.get('date_recorded')}\n"
             return str
         else:
             return USER_NO_TRANSACTION

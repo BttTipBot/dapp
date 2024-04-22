@@ -20,24 +20,23 @@ def record_transaction_by_t_username(t_username, amount, transaction_type='trans
     if user_data:
         user_id = user_data[0].id
         # Record the transaction in the HISTORY collection
-        record_history_transaction(user_id, amount, transaction_type)
+        record_history_transaction(user_id, amount, transaction_type, currency)
 
         # Update the balance in the BALANCE table
         balance_ref = db.collection('BALANCE').where('user_id', '==', user_id).where('currency', '==', currency)
-        balance_p = balance_ref.get()[0].reference
         balance_data = balance_ref.get()
-        balance_object = balance_data[0].to_dict()
-        print(f'balance_data: {balance_data}')
-        print(f'balance_ref: {balance_ref}')
-        print(f'balance_p: {balance_p}')
-
         if balance_data:
+            balance_object = balance_data[0].to_dict()
+            balance_p = balance_data[0].reference
+            print(f'balance_data: {balance_data}')
+            print(f'balance_ref: {balance_ref}')
+            print(f'balance_p: {balance_p}')
             balance_p.update({'balance': balance_object.get('balance') + amount})
         else:
             db.collection('BALANCE').add({
-                'user_id': user_id,
-                'currency': currency,
-                'balance': amount
+            'user_id': user_id,
+            'currency': currency,
+            'balance': amount
             })
 
 def record_global_top_up_by_t_username(t_username, amount, currency='BTT'):
@@ -124,7 +123,7 @@ def record_tip_by_t_username(t_username_sender, t_username_receiver, amount, cur
     record_transaction_by_t_username(t_username_sender, -amount, f'you tip telegram@{t_username_receiver} 💸', currency)
     record_transaction_by_t_username(t_username_receiver, amount, f'you were tip by telegram@{t_username_sender} 🤑', currency)
 
-    return f"Tip successful! @{t_username_sender} tipped @{t_username_receiver} {human_format(amount)} ${currency}."
+    return f"Tip successful! @{t_username_sender} tipped @{t_username_receiver} {human_format(amount)} {currency}."
 
 
 def record_rain_by_t_username(t_username, users, amount, currency='BTT'):

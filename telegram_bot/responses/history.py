@@ -3,6 +3,8 @@ from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ContextTypes
 from db.history import get_history_by_t_username
 
+from .telegram_send import send_text
+
 async def history(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message_text = update.message.text
 
@@ -16,4 +18,8 @@ async def history(update: Update, context: ContextTypes.DEFAULT_TYPE):
         elif len(historyString) > 4096:
             historyString = historyString[:4090] + '''...'''
 
-        await update.message.reply_text(historyString)
+        await send_text(
+            update,
+            historyString,
+            parse_mode="HTML"
+            )

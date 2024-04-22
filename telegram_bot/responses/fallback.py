@@ -39,6 +39,9 @@ from constants.globals import (
     
 )
 
+
+from .telegram_send import send_text
+
 def extract_message_from_previous_state(previous_state: str, cmd: str) -> str:
     return previous_state.replace(cmd, "")
 
@@ -94,7 +97,7 @@ async def fallback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -
             
             reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON, WALLET_BUTTON]], resize_keyboard=True)
 
-            await update.message.reply_text("Sorry, I didn't understand that command.", reply_markup=reply_markup)
+            await send_text(update, "Sorry, I didn't understand that command.", reply_markup=reply_markup)
     else:
         chat_id = update.message.chat.id
         print(f"fallback_handler: message: {message}")

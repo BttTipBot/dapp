@@ -39,6 +39,8 @@ from constants.responses import (
 
 from constants.parameters import PARAMETER_MINIMUM_WITHDRAW_BTT
 
+from .telegram_send import send_text, send_html
+
 # Wallet goes to
 async def withdraw_btt(update, context):
     user = update.effective_user
@@ -75,7 +77,7 @@ async def withdraw_btt_in_wallet(update, context):
                 withdraw_amount = update.message.text
 
                 if is_int(withdraw_amount) == False:
-                    await update.message.reply_text(TEXT_INVALID_AMOUNT.format(text=withdraw_amount) + EXAMPLE_AMOUNT)
+                    await send_text(update, TEXT_INVALID_AMOUNT.format(text=withdraw_amount) + EXAMPLE_AMOUNT)
                 else:
                     wallet_name = arguments[1]
                     my_wallet = get_my_wallet_t(user.username, wallet_name)
@@ -95,10 +97,10 @@ async def withdraw_btt_in_wallet(update, context):
                             if check_tx_status(tx) == True:
                                 withdraw_balance_by_t_username(tx, user.username, withdraw_amount_int)
                                 reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
-                                await update.message.reply_html(RESPONSE_WITHDRAW_SUCCESS.format(amount=human_format(withdraw_amount_int), url=url), reply_markup=reply_markup)
+                                await send_html(update, RESPONSE_WITHDRAW_SUCCESS.format(amount=human_format(withdraw_amount_int), url=url), reply_markup=reply_markup)
                             else:
                                 reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
-                                await update.message.reply_text(RESPONSE_WITHDRAW_FAILED.format(amount=human_format(withdraw_amount_int), url=url), reply_markup=reply_markup)
+                                await send_text(update, RESPONSE_WITHDRAW_FAILED.format(amount=human_format(withdraw_amount_int), url=url), reply_markup=reply_markup)
 
         else:
             wallet_name = update.message.text.replace(WITHDRAW_BUTTON_ON_ACCOUNT, "")
@@ -123,7 +125,7 @@ async def withdraw_btt_in_address(update, context):
             withdraw_amount = update.message.text.split(" ")[1]
 
             if is_int(withdraw_amount) == False or is_address(address) == False:
-                await update.message.reply_text(TEXT_INVALID_AMOUNT_ADDRESS.format(text=update.message.text) + EXAMPLE_ADDRESS_AMOUNT)
+                await send_text(update, TEXT_INVALID_AMOUNT_ADDRESS.format(text=update.message.text) + EXAMPLE_ADDRESS_AMOUNT)
             else:
                 withdraw_amount_int = convert_to_int(withdraw_amount)
                 balance = get_balance_by_t_username(user.username)
@@ -140,10 +142,10 @@ async def withdraw_btt_in_address(update, context):
                     if check_tx_status(tx) == True:
                         withdraw_balance_by_t_username(tx, user.username, withdraw_amount_int)
                         reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
-                        await update.message.reply_html(RESPONSE_WITHDRAW_SUCCESS.format(amount=human_format(withdraw_amount_int), url=url), reply_markup=reply_markup)
+                        await send_html(update, RESPONSE_WITHDRAW_SUCCESS.format(amount=human_format(withdraw_amount_int), url=url), reply_markup=reply_markup)
                     else:
                         reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
-                        await update.message.reply_text(RESPONSE_WITHDRAW_FAILED.format(amount=human_format(withdraw_amount_int), url=url), reply_markup=reply_markup)
+                        await send_text(update, RESPONSE_WITHDRAW_FAILED.format(amount=human_format(withdraw_amount_int), url=url), reply_markup=reply_markup)
 
         else:
             set_command_by_t_username(user.username, WITHDRAW_BUTTON_ON_ADDRESS)

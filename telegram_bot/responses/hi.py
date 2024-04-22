@@ -4,6 +4,7 @@ import random
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ContextTypes
 
+from .telegram_send import send_animation
 
 
 # Define the start function
@@ -37,14 +38,18 @@ async def hello(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         user = update.effective_user
 
         if len(context.args) == 1 and context.args[0][0] == '@':
-            await update.message.reply_animation(
+            await send_animation(
+                update, 
                 animation=file,
                 caption=f"{selected_message} @{user.username} says to @{context.args[0][1:]}",
+                parse_mode="HTML"
             )
         else:
-            await update.message.reply_animation(
+            await send_animation(
+                update, 
                 animation=file,
                 caption=f"{selected_message} @{user.username}",
+                parse_mode="HTML"
             )
 
 
@@ -77,14 +82,16 @@ async def good_morning(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
         user = update.effective_user
         if len(context.args) == 1 and context.args[0][0] == '@':
-            await update.message.reply_animation(
+            await send_animation(update, 
                 animation=file,
                 caption=f"{selected_message} @{user.username} gm to @{context.args[0][1:]}",
+                parse_mode="HTML"
             )
         else:
-            await update.message.reply_animation(
+            await send_animation(update, 
                 animation=file,
                 caption=f"{selected_message} @{user.username}",
+                parse_mode="HTML"
             )
 
 # Define the start function
@@ -101,9 +108,9 @@ async def good_night(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
         
         # List of good night GIF URLs (replace with your own URLs)
         gif_urls = [
-            "assets/gif/gm.gif",
-            "assets/gif/gm2.gif",
-            "assets/gif/gm3.gif",
+            "assets/gif/gn.gif",
+            "assets/gif/gn2.gif",
+            "assets/gif/gn3.gif",
         ]
         
         # Randomly select a good night message
@@ -116,12 +123,14 @@ async def good_night(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
         user = update.effective_user
         if len(context.args) == 1 and context.args[0][0] == '@':
-            await update.message.reply_animation(
+            await send_animation(update, 
                 animation=file,
                 caption=f"{selected_message} @{user.username} gn to @{context.args[0][1:]}",
+                parse_mode="HTML"
             )
         else:
-            await update.message.reply_animation(
+            await send_animation(update, 
                 animation=file,
                 caption=f"{selected_message} @{user.username}",
+                parse_mode="HTML"
             )
