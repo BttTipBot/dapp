@@ -21,7 +21,7 @@ async def send_animation(update: Update, animation: Animation, caption: str = ""
             return await update.message.reply_text(f"An error occurred: {e}")
 
     
-async def send_photo(update: Update, photo: PhotoSize, caption: str = "", parse_mode: str = "Markdown", reply_markup: ReplyKeyboardMarkup = None):
+async def send_photo(update: Update, photo: PhotoSize, caption: str = "", parse_mode: str = "HTML", reply_markup: ReplyKeyboardMarkup = None):
     try:
         return await update.message.reply_photo(
             photo=photo,
@@ -39,7 +39,7 @@ async def send_photo(update: Update, photo: PhotoSize, caption: str = "", parse_
             return await update.message.reply_text(f"An error occurred: {e}")
 
 
-async def send_text(update: Update, text: str = "", parse_mode: str = "Markdown", reply_markup: ReplyKeyboardMarkup = None):
+async def send_text(update: Update, text: str = "", parse_mode: str = "HTML", reply_markup: ReplyKeyboardMarkup = None):
     return await update.message.reply_text(
         text=text,
         parse_mode=parse_mode,

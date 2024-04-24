@@ -26,19 +26,26 @@ async def tip(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     
     # Get the reply message sender
     if len(context.args) == 3:
+        # 1. Case all the parameters are passed
         amount = context.args[0]
         symbol_name = context.args[1]
         receiver = context.args[2][1:]
 
-        if(context.args[2][1] != '@'):
+        if(context.args[2][0] != '@'):
             await send_text(update, "You must include the @ to send to a user \n\n Usage: /tip amount $TIP @user")
             return
     elif len(context.args) == 2:
         amount = context.args[0]
         symbol_name = "btt"
         receiver = context.args[1][1:]
+        
+        # Case 2. Two arguments are passed 
+        # Case 2.1 The user is replying to a message so is saying /tip amount $TIP
+        # Case 2.2 The user is saying /tip amount @user
+        
+        # Note we assume that the user is using second case and if is not @ we assume is the first case
 
-        if(context.args[1][1] != '@'):
+        if(context.args[1][0] != '@'):
             # it could be that the user is replying to a message
             if update.message.reply_to_message is None:
                 await send_text(update, "You must include the @ to send to a user \n\n Usage: /tip amount @user")
@@ -47,6 +54,7 @@ async def tip(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                 reply_sender = update.message.reply_to_message.from_user
                 receiver = reply_sender.username
                 symbol_name = context.args[1]
+
     elif len(context.args) == 1 and update.message.reply_to_message is not None:
         print("context.args", context.args)
         amount = context.args[0]
@@ -105,7 +113,7 @@ async def tipOnChain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
         symbol_name = context.args[1]
         receiver = context.args[2][1:]
 
-        if(context.args[2][1] != '@'):
+        if(context.args[2][0] != '@'):
             await send_text(update, "You must include the @ to send to a user \n\n Usage: /tipOnChain amount $TIP @user")
             return
     elif len(context.args) == 2:
@@ -113,7 +121,7 @@ async def tipOnChain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
         symbol_name = "btt"
         receiver = context.args[1][1:]
 
-        if(context.args[1][1] != '@'):
+        if(context.args[1][0] != '@'):
             # it could be that the user is replying to a message
             if update.message.reply_to_message is None:
                 await send_text(update, "You must include the @ to send to a user \n\n Usage: /tipOnChain amount @user")
