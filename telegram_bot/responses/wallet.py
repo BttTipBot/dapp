@@ -443,9 +443,9 @@ async def wallet_onchain_transfer(update, context):
                         print(f"wallet_onchain_transfer msg_wait Error: {e}")
 
                     if whitelist_token['symbol'] == BTT_SYMBOL:
-                        balance = balance = get_balance(my_wallet['address'])
+                        balance = get_balance(my_wallet['address'])
                     else:
-                        balance = get_erc20_balance(whitelist_token['address'], my_wallet['address'])
+                        balance = get_tip_erc20_balance(whitelist_token['address'], my_wallet['address'])
                     amount_int = convert_to_int(amount)
 
                     if amount_int > balance:

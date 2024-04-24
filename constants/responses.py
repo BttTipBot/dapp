@@ -7,10 +7,13 @@ INVALID_ADDRESS_PROVIDED = "Invalid address provided 🤕 \n"
 TEXT_INVALID_AMOUNT = "The {text} could not be parsed as a valid amount. 🤕 \n"
 TEXT_INVALID_TOKEN_SYMBOL = "The {text} could not be parsed as a valid whitelisted symbol. 🤕 \n"
 TEXT_INVALID_AMOUNT_ADDRESS = "The {text} could not be parsed as a valid address fallowed by a valid amount. 🤕 \n"
+TEXT_INVALID_AMOUNT_ADDRESS_SYMBOL = "The {text} could not be parsed as a valid address fallowed by a valid amount and a valid symbol. 🤕 \n"
 
 EXAMPLE_AMOUNT = "\n\n Example: 1000, 1k, 1m, 1b \n"
+EXAMPLE_AMOUNT_SYMBOL = "\n\n Example: 1000 $HTX, 1k $BTT, 1m $USDT, 1b $USDC \n"
 EXAMPLE_ADDRESS = "\n\n Example: 0x1234... \n"
 EXAMPLE_ADDRESS_AMOUNT = "\n\n Example: 0x1234... 1000 \n"
+EXAMPLE_ADDRESS_AMOUNT_SYMBOL = "\n\n Example: '0x1234... 1m $HTX', '0x1234... 10k $Btt' \n"
 
 
 # Messages Wallet
@@ -142,16 +145,29 @@ Insufficient balance. 🤕 \n\n\n
 """
 
 RESPONSE_WITHDRAW_INPUT_AMOUNT = """
-🏧 Withdraw 📥 $BTT to your wallet⛓️. \n\n\n
+🏧 Withdraw 📥 $BTT & BRC20 tokens to your wallet⛓️. \n\n\n
 
 Provide the amount you want to withdraw.
 """ + EXAMPLE_AMOUNT
 
+
+RESPONSE_WITHDRAW_INPUT_AMOUNT_SYMBOL = """
+🏧 Withdraw 📥 $BTT & BRC20 tokens to your wallet⛓️. \n\n\n
+
+Provide the amount you want to withdraw and the symbol.
+""" + EXAMPLE_AMOUNT_SYMBOL
+
 RESPONSE_WITHDRAW_INPUT_AMOUNT_ADDRESS = """
-🏧 Withdraw 📥 $BTT to your wallet⛓️. \n\n\n
+🏧 Withdraw 📥 $BTT & BRC20 tokens to your wallet⛓️. \n\n\n
 
 Provide the address and the amount you want to withdraw.
 """ + EXAMPLE_ADDRESS_AMOUNT
+
+RESPONSE_WITHDRAW_INPUT_AMOUNT_ADDRESS_SYMBOL = """
+🏧 Withdraw 📥 $BTT & BRC20 tokens to your wallet⛓️. \n\n\n
+
+Provide the address and the amount and the symbol you want to withdraw.
+""" + EXAMPLE_ADDRESS_AMOUNT_SYMBOL
 
 RESPONSE_WITHDRAW_SUCCESS = """
 🏧✅
