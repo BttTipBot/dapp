@@ -20,10 +20,7 @@ from constants.globals import TIP_INSUFFICIENT_BALANCE
 from .telegram_send import send_animation, send_text, send_html
 
 
-# Define the tip function
-async def tip(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    # If the context args length is less than 2, return an error message
-    
+async def get_input_arguments(update, context):
     # Get the reply message sender
     if len(context.args) == 3:
         # 1. Case all the parameters are passed
@@ -78,18 +75,36 @@ async def tip(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     sender = update.message.from_user
     if sender.username == receiver:
         await send_text(update, "You can't tip yourself! 🤦‍♂️")
-        return
+        return 
     
+    return { 'sender': sender.username,
+            'amount': amount,
+            'symbol_name': symbol_name,
+            'receiver': receiver
+            }
+
+# Define the tip function
+async def tip(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    
+    # Get the input arguments
+    input_arguments = await get_input_arguments(update, context)
+    symbol_name = input_arguments['symbol_name']
+    amount = input_arguments['amount']
+    sender = input_arguments['sender']
+    receiver = input_arguments['receiver']
+
+    # Process the tip
     whitelist_token = get_whitelist_token_by_symbol(symbol_name)
     amount_int = convert_to_int(amount)
-    balance_sender = get_balance_by_t_username(sender.username, whitelist_token['symbol'])
+    balance_sender = get_balance_by_t_username(sender, whitelist_token['symbol'])
     fee = int(get_param(PARAMETER_TIP_FEE_BTT))
 
-    if balance_sender + fee < amount_int:
+    # Check if the user has enough balance
+    if balance_sender < amount_int:
         await send_text(update, TIP_INSUFFICIENT_BALANCE.format(balance=human_format(balance_sender), symbol=whitelist_token['symbol'], max=human_format(balance_sender)))
         return
 
-    result = record_tip_by_t_username(sender.username, receiver, amount_int, whitelist_token['symbol'])
+    result = record_tip_by_t_username(sender, receiver, amount_int, whitelist_token['symbol'])
     min_joke_amount = get_param(PARAMETER_MIN_AMOUNT_JOKE)
 
     if amount_int >= min_joke_amount:
@@ -194,29 +209,3 @@ async def tipOnChain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
             await send_html(update, f"Tip successful from user @{sender.username} from his wallet #{my_wallet['name']} to user @{receiver}! to wallet #{receiver_wallet['name']}", reply_markup=reply_markup)
         else:
             await send_html(update, f"Tip failed for user @{receiver}!", reply_markup=reply_markup)
-
-
-# Define the rain function
-async def rain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    # If the context args length is less than 2, return an error message
-    if len(context.args) < 1:
-        await send_text(update, 'Usage: /rain amount')
-        return
-
-    # Get the user and amount
-    sender = update.message.from_user
-    amount = context.args[0]
-    receiver = context.args[1][1:]
-
-    if is_int(amount) == False:
-        await send_text(update, 'Invalid amount')
-        return
-
-    # Get all the users in the group
-    users = update.message.chat.get_members_count()
-
-    # Get a list of the usersname in the group
-    return
-    
-
-
