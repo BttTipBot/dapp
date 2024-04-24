@@ -10,6 +10,7 @@ from db.parameters import get_param
 from db.balances import get_balance_by_t_username
 from constants.parameters import PARAMETER_RAIN_FEE_BTT
 from constants.globals import RAIN_INSUFFICIENT_BALANCE
+from utils.tokens import get_whitelist_token_by_symbol
 
 from .telegram_send import send_text, send_animation
 
@@ -25,16 +26,23 @@ async def rain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # Get the list of users in the group
     # users_count = await update.message.chat.get_member_count()
     
-    if len(context.args) < 1:
-        await send_text(update, 'Usage: /rain <amount> [5m/1h/1d]')
-        return
-    
-    # Get the amount
-    amount = context.args[0]
-    print(f"amount = '{amount}'")
+    if len(context.args) == 3:
+        amount = context.args[0]
+        symbol_name = context.args[1]
+        timeback = context.args[2]
+    elif len(context.args) == 2:
+        amount = context.args[0]
+        symbol_name = context.args[1]
+        timeback = '1d'
+    elif len(context.args) == 1:
+        amount = context.args[0]
+        symbol_name = 'BTT'
+        timeback = '1d'
+    else:
+        await send_text(update, 'Usage: /rain <amount> <symbol> [5m/1h/1d]')
+    whitelist_token = get_whitelist_token_by_symbol(symbol_name)
 
     amount_int = 0
-
     # Check if ammount is correct
     if is_int(amount):
         amount_int = convert_to_int(amount)
@@ -44,17 +52,15 @@ async def rain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     
     # Check if the user has the sufficient balance
     sender = update.message.from_user
-    balance_sender = get_balance_by_t_username(sender.username)
+    balance_sender = get_balance_by_t_username(sender.username, whitelist_token['symbol'])
     fee = int(get_param(PARAMETER_RAIN_FEE_BTT))
 
     if balance_sender + fee < amount_int and amount_int > 0:
-        await send_text(update, RAIN_INSUFFICIENT_BALANCE.format(balance=human_format(balance_sender), max=human_format(balance_sender)))
+        await send_text(update,
+                        RAIN_INSUFFICIENT_BALANCE.format(balance=human_format(balance_sender),
+                                                         symbol=whitelist_token['symbol'],
+                                                         max=human_format(balance_sender)))
         return
-
-    if len(context.args) > 2:
-        timeback = context.args[1]
-    else:
-        timeback = '1d'
 
     # Use get Activity by chat id
     users = get_activity_by_chat_id_timeback(update.message.chat.id, timeback)
@@ -65,7 +71,7 @@ async def rain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await send_text(update, "☒ No active users in the group")
         return
 
-    str = record_rain_by_t_username(sender.username, users, amount_int)
+    str = record_rain_by_t_username(sender.username, users, amount_int,  whitelist_token['symbol'])
 
     # List of good night GIF URLs (replace with your own URLs)
     gif_urls = [

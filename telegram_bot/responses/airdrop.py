@@ -12,6 +12,7 @@ from constants.parameters import PARAMETER_AIRDROP_FEE_BTT
 from constants.globals import AIRDROP_INSUFFICIENT_BALANCE
 
 from .telegram_send import send_animation, send_text
+from utils.tokens import get_whitelist_token_by_symbol
 
 
 # Define the airdrop function
@@ -20,10 +21,16 @@ async def airdrop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if update.message.chat.type == 'private':
         await send_text(update, "The airdrop feature is only available in groups.")
         return
-    
-    if len(context.args) < 1:
-        await send_text(update, 'Usage: /airdrop <amount>')
-        return
+
+    if len(context.args) == 2:
+        amount = context.args[0]
+        symbol_name = context.args[1]
+    elif len(context.args) == 1:
+        amount = context.args[0]
+        symbol_name = 'BTT'
+    else:
+        await send_text(update, 'Usage: /airdrop <amount> <symbol>')
+    whitelist_token = get_whitelist_token_by_symbol(symbol_name)
     
     # Get the amount
     amount = context.args[0]
@@ -40,11 +47,13 @@ async def airdrop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     
     # Check if the user has the sufficient balance
     sender = update.message.from_user
-    balance_sender = get_balance_by_t_username(sender.username)
-    fee = int(get_param(PARAMETER_AIRDROP_FEE_BTT))
+    balance_sender = get_balance_by_t_username(sender.username, whitelist_token['symbol'])
 
-    if balance_sender + fee < amount_int and amount_int > 0:
-        await send_text(update, AIRDROP_INSUFFICIENT_BALANCE.format(balance=human_format(balance_sender), max=human_format(balance_sender)))
+    if balance_sender < amount_int and amount_int > 0:
+        await send_text(update, 
+                        AIRDROP_INSUFFICIENT_BALANCE.format(balance=human_format(balance_sender),
+                                                            symbol = whitelist_token['symbol'],
+                                                            max=human_format(balance_sender)))
         return
 
     # Use get Activity by chat id
@@ -57,7 +66,7 @@ async def airdrop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await send_text(update, "☒ No active users in the group")
         return
 
-    str = record_airdrop_by_t_username(sender.username, users, amount_int)
+    str = record_airdrop_by_t_username(sender.username, users, amount_int, whitelist_token['symbol'])
 
     # List of good night GIF URLs (replace with your own URLs)
     gif_urls = [

@@ -44,8 +44,8 @@ USER_WELCOME_BONUS_MESSAGE = "🎉 You received a welcome bonus of {amount} BTT!
 TIP_RECEIVED_MESSAGE = "🎉 You received a tip of {amount} BTT from @{sender}!"
 TIP_WELCOME_AMOUNT = "🎉 You received a welcome tip of {amount} BTT!"
 TIP_INSUFFICIENT_BALANCE = "Insufficient balance. 🤕 \n\n\n Your balance is {balance} {symbol}. Provide a number smaller than {max}"
-RAIN_INSUFFICIENT_BALANCE = "Insufficient balance. 🤕 \n\n\n Your balance is {balance} $BTT. Provide a number smaller than {max}"
-AIRDROP_INSUFFICIENT_BALANCE = "Insufficient balance. 🤕 \n\n\n Your balance is {balance} $BTT. Provide a number smaller than {max}"
+RAIN_INSUFFICIENT_BALANCE = "Insufficient balance. 🤕 \n\n\n Your balance is {balance} {symbol}. Provide a number smaller than {max}"
+AIRDROP_INSUFFICIENT_BALANCE = "Insufficient balance. 🤕 \n\n\n Your balance is {balance} {symbol}. Provide a number smaller than {max}"
 
 # Mesaages Wallet
 MESSAGE_NO_WALLET = "You don't have a wallet. Please create one."
