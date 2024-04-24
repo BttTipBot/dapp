@@ -1,11 +1,13 @@
 
+import os
+
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ContextTypes
 
-from blockchain.tip_contract import tip_call
+from blockchain.tip_contract import tip_call, tip_erc20_call
 from db.transactions import record_tip_by_t_username
 from db.wallets import get_all_wallets_by_t_username
-from blockchain.tip_contract import get_tip_balance
+from blockchain.tip_contract import get_tip_balance, get_tip_erc20_balance
 from blockchain.tx import check_tx_status
 from utils.wallet import is_address, get_url_by_tx
 from utils.convert import is_int, convert_to_int, human_format
@@ -15,7 +17,8 @@ from constants.parameters import PARAMETER_MIN_AMOUNT_JOKE
 from db.parameters import get_param
 from db.balances import get_balance_by_t_username
 from constants.parameters import PARAMETER_TIP_FEE_BTT
-from constants.globals import TIP_INSUFFICIENT_BALANCE
+from constants.globals import TIP_INSUFFICIENT_BALANCE, BTT_SYMBOL
+from constants.responses_gives import RESPONSE_NOT_ENOUGH_BALANCE_ON_CHAIN, RESPONSE_NOT_ENOUGH_BALANCE_ON_TELEGRAM
 
 from .telegram_send import send_animation, send_text, send_html
 
@@ -101,7 +104,8 @@ async def tip(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     # Check if the user has enough balance
     if balance_sender < amount_int:
-        await send_text(update, TIP_INSUFFICIENT_BALANCE.format(balance=human_format(balance_sender), symbol=whitelist_token['symbol'], max=human_format(balance_sender)))
+        TIP_BOT_URL = os.getenv('TIP_BOT_URL')
+        await send_text(update, RESPONSE_NOT_ENOUGH_BALANCE_ON_TELEGRAM.format(url=TIP_BOT_URL))
         return
 
     result = record_tip_by_t_username(sender, receiver, amount_int, whitelist_token['symbol'])
@@ -192,20 +196,36 @@ async def tipOnChain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     my_wallet = None
 
     for wallet in wallets:
-        balance = get_tip_balance(wallet['address'])
+        if BTT_SYMBOL == whitelist_token['symbol']:
+            balance = get_tip_balance(wallet['address'])
+        else:   
+            balance = get_tip_erc20_balance(whitelist_token['address'], wallet['address'])
         if balance >= amount_int:
             my_wallet = wallet
 
     if my_wallet is None:
-        await send_text(update, 'You do not have enough $TIP to send')
+        TIP_BOT_URL = os.getenv('TIP_BOT_URL')
+        await send_text(update, RESPONSE_NOT_ENOUGH_BALANCE_ON_CHAIN.format(url=TIP_BOT_URL))
         return
     else:
         print(f"TipOnChain by username: sender={sender} amount={amount} receiver={receiver_wallet}")
 
-        tx = tip_call(my_wallet['address'], receiver_wallet['address'], amount_int, my_wallet['pk'])
+        if BTT_SYMBOL == whitelist_token['symbol']:
+            tx = tip_call(my_wallet['address'], receiver_wallet['address'], amount_int, my_wallet['pk'])
+        else:
+            tx = tip_erc20_call(amount_int, my_wallet['address'], receiver_wallet['address'], my_wallet['pk'], whitelist_token['address'])
         url = get_url_by_tx(tx)
         reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("Explorer", url=url)]])
         if check_tx_status(tx) == True:
-            await send_html(update, f"Tip successful from user @{sender.username} from his wallet #{my_wallet['name']} to user @{receiver}! to wallet #{receiver_wallet['name']}", reply_markup=reply_markup)
+            min_joke_amount = get_param(PARAMETER_MIN_AMOUNT_JOKE)
+            tip_animation = get_tip_joke_text_and_animation(amount_int)
+            joke_animation = tip_animation['animation']
+            joke = tip_animation['joke']
+            result = f"Tip successful {human_format(amount_int)} {whitelist_token['symbol']} from user @{sender.username} from his wallet #{my_wallet['name']} to user @{receiver}! to wallet #{receiver_wallet['name']}"
+            await send_animation(update,
+                                 joke_animation,
+                                 caption=f"{result} \n\n {joke}",
+                                 reply_markup=reply_markup)
+
         else:
             await send_html(update, f"Tip failed for user @{receiver}!", reply_markup=reply_markup)

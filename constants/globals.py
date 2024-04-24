@@ -1,3 +1,5 @@
+BTT_SYMBOL = 'BTT'
+
 
 USER_NOT_FOUND = "User not found! Call /start to register."
 USER_NO_TRANSACTION = "No transactions found! Call /tip to send a tip."
