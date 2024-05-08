@@ -43,6 +43,7 @@ from .responses.history import history
 from .responses.withdraw import withdraw_btt, withdraw_btt_in_address, withdraw_btt_in_wallet
 from .responses.help import help_command
 from .responses.fallback import fallback_handler
+from .responses.howto import how_to_deposit, how_to_top_up
 
 
 # Load the environment variables
@@ -73,6 +74,8 @@ def run_bot_telegram() -> None:
     application.add_handler(CommandHandler('balance', balance_telegram))
     application.add_handler(CommandHandler('balanceAll', balance))
     application.add_handler(CommandHandler('history', history))
+    application.add_handler(CommandHandler('howtodeposit', how_to_deposit))
+    application.add_handler(CommandHandler('howtotopup', how_to_top_up))
 
     # Register the tip function
     application.add_handler(CommandHandler('tip', tip))

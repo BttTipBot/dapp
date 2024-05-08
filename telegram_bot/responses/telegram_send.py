@@ -13,9 +13,9 @@ async def send_animation(update: Update, animation: Animation, caption: str = ""
         )
     except Exception as e:
         if isinstance(e, RetryAfter):
-            return await update.message.reply_text(f"I'm being rate limited. Please try again later. 😢 \n\n {e}")
+            send_text(update, caption, parse_mode, reply_markup)
         elif isinstance(e, TimedOut):
-            return await update.message.reply_text(f"We process your request but got timed out when sending the response. 😢 \n\n {e}")
+            print("send_animation", e)
         else:
             print("send_animation", e)
             return await update.message.reply_text(f"An error occurred: {e}")
