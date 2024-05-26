@@ -44,7 +44,7 @@ from .responses.withdraw import withdraw_btt, withdraw_btt_in_address, withdraw_
 from .responses.help import help_command
 from .responses.fallback import fallback_handler
 from .responses.howto import how_to_deposit, how_to_top_up
-
+from .responses.burn import BurnOnChain, burn, trigger_burn
 
 # Load the environment variables
 load_dotenv()
@@ -72,6 +72,9 @@ def run_bot_telegram() -> None:
     application.add_handler(CommandHandler('gm', good_morning))
     application.add_handler(CommandHandler('gn', good_night))
     application.add_handler(CommandHandler('balance', balance_telegram))
+    application.add_handler(CommandHandler('burnOnChain', BurnOnChain))
+    application.add_handler(CommandHandler('burn', burn))
+    application.add_handler(CommandHandler('triggerBurn', trigger_burn))
     application.add_handler(CommandHandler('balanceAll', balance))
     application.add_handler(CommandHandler('history', history))
     application.add_handler(CommandHandler('howtodeposit', how_to_deposit))

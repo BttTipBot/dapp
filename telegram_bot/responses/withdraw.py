@@ -117,7 +117,7 @@ async def withdraw_btt_in_wallet(update, context):
                             url = get_url_by_tx(tx)
                             
                             if check_tx_status(tx) == True:
-                                withdraw_balance_by_t_username(tx, user.username, withdraw_amount_int, whitelist_token['address'])
+                                withdraw_balance_by_t_username(tx, user.username, withdraw_amount_int, whitelist_token['symbol'])
                                 reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
                                 await send_html(update, RESPONSE_WITHDRAW_SUCCESS.format(amount=human_format(withdraw_amount_int), symbol = whitelist_token['symbol'], url=url), reply_markup=reply_markup)
                             else:
@@ -183,7 +183,7 @@ async def withdraw_btt_in_address(update, context):
                         tx = withdraw_top_up_erc20_tip(address, withdraw_amount_int, whitelist_token['address'])
                     url = get_url_by_tx(tx)
                     if check_tx_status(tx) == True:
-                        withdraw_balance_by_t_username(tx, user.username, withdraw_amount_int, whitelist_token['address'])
+                        withdraw_balance_by_t_username(tx, user.username, withdraw_amount_int, whitelist_token['symbol'])
                         reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
                         await send_html(update, RESPONSE_WITHDRAW_SUCCESS.format(amount=human_format(withdraw_amount_int), symbol = whitelist_token['symbol'], url=url), reply_markup=reply_markup)
                     else:

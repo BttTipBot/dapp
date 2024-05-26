@@ -101,8 +101,9 @@ def top_up_balance_by_t_username(tx, t_username, amount, currency='BTT'):
 
 def withdraw_balance_by_t_username(tx, t_username, amount, currency='BTT'):
     # Record the top up in the HISTORY collection
+    record_transaction_by_t_username(t_username, -5000, f"🏧⛽ withdraw fee", 'BTT')
     record_transaction_by_t_username(t_username, -amount, '🏧 withdraw ' + get_short_tx(tx), currency)
-    record_global_top_up_by_t_username(t_username, amount, currency)
+    record_global_top_up_by_t_username(t_username, -amount, currency)
 
 
 def record_tip_by_t_username(t_username_sender, t_username_receiver, amount, currency='BTT'):
@@ -125,6 +126,23 @@ def record_tip_by_t_username(t_username_sender, t_username_receiver, amount, cur
 
     return f"Tip successful! @{t_username_sender} tipped @{t_username_receiver} {human_format(amount)} {currency}."
 
+
+
+def record_burn_by_t_username(t_username_sender, t_username_receiver, amount, currency='BTT'):
+
+    # if balance_sender + fee < amount:
+    #     return TIP_INSUFFICIENT_BALANCE.format(balance=balance_sender, max=balance_sender)
+    result = get_or_create_user(t_username=t_username_sender)
+    if result == USER_NEW_USER_ADDED:
+        record_welcome_bonus_by_t_username(t_username_sender)
+    receiver = get_or_create_user(t_username=t_username_receiver)
+    
+    record_transaction_by_t_username(t_username_sender, -amount, f'🔥🔥🔥 burn', currency)
+    record_transaction_by_t_username(t_username_receiver, amount, f'🔥🔥🔥 burn', currency)
+
+def reset_burn(t_username_sender, amount, currency='BTT'):
+    # Reset the burn in the HISTORY collection
+    record_transaction_by_t_username(t_username_sender, -amount, f'🔥🔥🔥 burn On Chain', currency)
 
 def record_rain_by_t_username(t_username, users, amount, currency='BTT'):
     # Record the rain in the HISTORY collection
