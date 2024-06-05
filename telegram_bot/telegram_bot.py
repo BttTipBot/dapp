@@ -45,6 +45,7 @@ from .responses.help import help_command
 from .responses.fallback import fallback_handler
 from .responses.howto import how_to_deposit, how_to_top_up
 from .responses.burn import BurnOnChain, burn, trigger_burn
+from .responses.dice import dice
 
 # Load the environment variables
 load_dotenv()
@@ -90,6 +91,7 @@ def run_bot_telegram() -> None:
     application.add_handler(CommandHandler('points', points))
     application.add_handler(CommandHandler('rain', rain))
     application.add_handler(CommandHandler('airdrop', airdrop))
+    application.add_handler(CommandHandler('dice', dice))
 
     # Register all the buttons handlers
     application.add_handler(MessageHandler(filters.Regex(f'^{USER_MAIN_MENU_BUTTON}$'), start))

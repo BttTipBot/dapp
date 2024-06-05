@@ -139,6 +139,21 @@ def record_burn_by_t_username(t_username_sender, t_username_receiver, amount, cu
     
     record_transaction_by_t_username(t_username_sender, -amount, f'🔥🔥🔥 burn', currency)
     record_transaction_by_t_username(t_username_receiver, amount, f'🔥🔥🔥 burn', currency)
+ 
+
+def record_dice_by_t_username(t_username_sender, dice_user_pool, amount, currency='BTT'):
+    result = get_or_create_user(t_username=t_username_sender)
+    if result == USER_NEW_USER_ADDED:
+        record_welcome_bonus_by_t_username(t_username_sender)
+    receiver = get_or_create_user(t_username=dice_user_pool)
+    
+    record_transaction_by_t_username(t_username_sender, -amount, f' 🎲🎰  fee competition', currency)
+    record_transaction_by_t_username(dice_user_pool, amount, f'🎲🎰 fee from telegram@{t_username_sender}', currency)
+  
+ 
+def record_dice_winner_by_t_username(t_username_sender, dice_user_pool, amount, currency='BTT'):
+    record_transaction_by_t_username(t_username_sender, amount, f'🎲🎉 dice winner', currency)
+    record_transaction_by_t_username(dice_user_pool, -amount, f'🎲🎉 win telegram@{t_username_sender}', currency)
 
 def reset_burn(t_username_sender, amount, currency='BTT'):
     # Reset the burn in the HISTORY collection
