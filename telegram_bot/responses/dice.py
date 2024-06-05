@@ -1,6 +1,7 @@
 
 import random
 import os
+import asyncio
 
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ContextTypes
@@ -77,14 +78,31 @@ async def dice(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         file = open(selected_gif_path, 'rb')
         user = update.effective_user
 
-        await send_animation(
+        msg_tgs =  await send_animation(
             update, 
             animation=file,
             parse_mode="HTML"
         )
         
-        await send_text(update, selected_message)
+        msg_text = await send_text(update, selected_message)
+        
+        msg_user = update.message
+        asyncio.create_task(delete_dice_msg(update, context, msg_user, msg_tgs, msg_text))
     else:
         await send_text(update, 'Usage: /dice number amount symbol')
         return
 
+
+async def delete_dice_msg(update: Update, context: ContextTypes.DEFAULT_TYPE, msg_user, msg_tgs, msg_text):
+    delay = 60
+    await asyncio.sleep(delay)
+    
+    if msg_user:
+        await msg_user.delete()
+    
+    if msg_tgs:
+        await msg_tgs.delete()
+    
+    if msg_text:
+        await msg_text.delete()
+    
