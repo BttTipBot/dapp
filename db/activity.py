@@ -111,3 +111,16 @@ def get_activity_by_chat_id_timeback(chat_id, timeback = '1h'):
     else:
         return []
    
+
+def get_unique_chat_ids():
+    activity_ref = db.collection('ACTIVITY')
+    activity_data = activity_ref.get()
+    if activity_data:
+        chat_ids = []
+        for act in activity_data:
+            chat_id = act.get('chat_id')
+            if chat_id not in chat_ids:
+                chat_ids.append(chat_id)
+        return chat_ids
+    else:
+        return []
