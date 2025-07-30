@@ -101,7 +101,7 @@ def top_up_balance_by_t_username(tx, t_username, amount, currency='BTT'):
 
 def withdraw_balance_by_t_username(tx, t_username, amount, currency='BTT'):
     # Record the top up in the HISTORY collection
-    record_transaction_by_t_username(t_username, -5000, f"🏧⛽ withdraw fee", 'BTT')
+    record_transaction_by_t_username(t_username, -10000, f"🏧⛽ withdraw fee", 'BTT')
     record_transaction_by_t_username(t_username, -amount, '🏧 withdraw ' + get_short_tx(tx), currency)
     record_global_top_up_by_t_username(t_username, -amount, currency)
 

@@ -141,6 +141,7 @@ RESPONSE_WITHDRAW_MINIMUM = """
 The minimum amount to withdraw is {amount} $BTT 
 You have {balance} $BTT \n\n\n
 
+This amount is for paying the fee
 Insufficient balance. 🤕 \n\n\n
 """
 

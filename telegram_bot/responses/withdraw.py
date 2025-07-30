@@ -99,30 +99,41 @@ async def withdraw_btt_in_wallet(update, context):
                     
                     if my_wallet is not None:
                         withdraw_amount_int = convert_to_int(withdraw_amount)
+                        min_balance = int(get_param(PARAMETER_MINIMUM_WITHDRAW_BTT))
+                        balance_btt = get_balance_by_t_username(user.username)
+                        
+                        if balance_btt is None or balance_btt < min_balance:
+                            reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
+                            await context.bot.send_message(user.id, f"Your balance is {human_format(balance_btt)} BTT, less than fee required {human_format(min_balance)} BTT.", reply_markup=reply_markup)
+                            return
+
                         if whitelist_token['symbol'] == BTT_SYMBOL:
-                            balance = get_balance_by_t_username(user.username)
+                            if balance_btt < withdraw_amount_int + min_balance:
+                                reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
+                                await context.bot.send_message(user.id, f"You have {human_format(balance_btt)} BTT, you need to withdraw at most {human_format((balance_btt - min_balance))} BTT.", reply_markup=reply_markup)
+                                return
                         else:
                             balance = get_balance_by_t_username(user.username, whitelist_token['symbol'])
-                        min_balance = int(get_param(PARAMETER_MINIMUM_WITHDRAW_BTT))
-                        if balance < min_balance or withdraw_amount_int > balance or withdraw_amount_int < min_balance:
-                            reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
-                            await context.bot.send_message(user.id, RESPONSE_WITHDRAW_MINIMUM.format(amount=human_format(min_balance), balance=human_format(balance)), reply_markup=reply_markup)
+                            if balance < withdraw_amount_int:
+                                reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
+                                await context.bot.send_message(user.id, f"You have {human_format(balance)} {whitelist_token['symbol']}, you need to withdraw at most {human_format((balance))} {whitelist_token['symbol']}.", reply_markup=reply_markup)
+                                return
+
+                        # Withdraw the amount
+                        set_command_by_t_username(user.username, WALLET_SELECT_BUTTON + my_wallet['name'])
+                        if whitelist_token['symbol'] == BTT_SYMBOL:
+                            tx = withdraw_tip_top_up(my_wallet['address'], withdraw_amount_int)
                         else:
-                            # Withdraw the amount
-                            set_command_by_t_username(user.username, WALLET_SELECT_BUTTON + my_wallet['name'])
-                            if whitelist_token['symbol'] == BTT_SYMBOL:
-                                tx = withdraw_tip_top_up(my_wallet['address'], withdraw_amount_int)
-                            else:
-                                tx = withdraw_top_up_erc20_tip(my_wallet['address'], withdraw_amount_int, whitelist_token['address'])
-                            url = get_url_by_tx(tx)
-                            
-                            if check_tx_status(tx) == True:
-                                withdraw_balance_by_t_username(tx, user.username, withdraw_amount_int, whitelist_token['symbol'])
-                                reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
-                                await send_html(update, RESPONSE_WITHDRAW_SUCCESS.format(amount=human_format(withdraw_amount_int), symbol = whitelist_token['symbol'], url=url), reply_markup=reply_markup)
-                            else:
-                                reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
-                                await send_text(update, RESPONSE_WITHDRAW_FAILED.format(amount=human_format(withdraw_amount_int), symbol = whitelist_token['symbol'], url=url), reply_markup=reply_markup)
+                            tx = withdraw_top_up_erc20_tip(my_wallet['address'], withdraw_amount_int, whitelist_token['address'])
+                        url = get_url_by_tx(tx)
+                        
+                        if check_tx_status(tx) == True:
+                            withdraw_balance_by_t_username(tx, user.username, withdraw_amount_int, whitelist_token['symbol'])
+                            reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
+                            await send_html(update, RESPONSE_WITHDRAW_SUCCESS.format(amount=human_format(withdraw_amount_int), symbol = whitelist_token['symbol'], url=url), reply_markup=reply_markup)
+                        else:
+                            reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
+                            await send_text(update, RESPONSE_WITHDRAW_FAILED.format(amount=human_format(withdraw_amount_int), symbol = whitelist_token['symbol'], url=url), reply_markup=reply_markup)
 
         else:
             wallet_name = update.message.text.replace(WITHDRAW_BUTTON_ON_ACCOUNT, "")
@@ -166,29 +177,41 @@ async def withdraw_btt_in_address(update, context):
                 await send_text(update, TEXT_INVALID_TOKEN_SYMBOL.format(text=symbol_name) + EXAMPLE_AMOUNT)
             else:
                 withdraw_amount_int = convert_to_int(withdraw_amount)
+                min_balance = int(get_param(PARAMETER_MINIMUM_WITHDRAW_BTT))
+                balance_btt = get_balance_by_t_username(user.username)
+                
+                if balance_btt is None or balance_btt < min_balance:
+                    reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
+                    await context.bot.send_message(user.id, f"Your balance is {human_format(balance_btt)} BTT, less than fee required {human_format(min_balance)} BTT.", reply_markup=reply_markup)
+                    return
+
                 if whitelist_token['symbol'] == BTT_SYMBOL:
-                    balance = get_balance_by_t_username(user.username)
+                    if balance_btt < withdraw_amount_int + min_balance:
+                        reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
+                        await context.bot.send_message(user.id, f"You have {human_format(balance_btt)} BTT, you need to withdraw at most {human_format((balance_btt - min_balance))} BTT.", reply_markup=reply_markup)
+                        return
                 else:
                     balance = get_balance_by_t_username(user.username, whitelist_token['symbol'])
-                min_balance = int(get_param(PARAMETER_MINIMUM_WITHDRAW_BTT))
-                if balance < min_balance or withdraw_amount_int > balance or withdraw_amount_int < min_balance:
-                    reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
-                    await context.bot.send_message(user.id, RESPONSE_WITHDRAW_MINIMUM.format(amount=human_format(min_balance), balance=human_format(balance)), reply_markup=reply_markup)
+                    if balance < withdraw_amount_int:
+                        reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
+                        await context.bot.send_message(user.id, f"You have {human_format(balance)} {whitelist_token['symbol']}, you need to withdraw at most {human_format((balance))} {whitelist_token['symbol']}.", reply_markup=reply_markup)
+                        return
+                    
+
+                # Withdraw the amount
+                set_command_by_t_username(user.username, USER_MAIN_MENU_BUTTON)
+                if whitelist_token['symbol'] == BTT_SYMBOL:
+                    tx = withdraw_tip_top_up(address, withdraw_amount_int)
                 else:
-                    # Withdraw the amount
-                    set_command_by_t_username(user.username, USER_MAIN_MENU_BUTTON)
-                    if whitelist_token['symbol'] == BTT_SYMBOL:
-                        tx = withdraw_tip_top_up(address, withdraw_amount_int)
-                    else:
-                        tx = withdraw_top_up_erc20_tip(address, withdraw_amount_int, whitelist_token['address'])
-                    url = get_url_by_tx(tx)
-                    if check_tx_status(tx) == True:
-                        withdraw_balance_by_t_username(tx, user.username, withdraw_amount_int, whitelist_token['symbol'])
-                        reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
-                        await send_html(update, RESPONSE_WITHDRAW_SUCCESS.format(amount=human_format(withdraw_amount_int), symbol = whitelist_token['symbol'], url=url), reply_markup=reply_markup)
-                    else:
-                        reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
-                        await send_text(update, RESPONSE_WITHDRAW_FAILED.format(amount=human_format(withdraw_amount_int), symbol = whitelist_token['symbol'], url=url), reply_markup=reply_markup)
+                    tx = withdraw_top_up_erc20_tip(address, withdraw_amount_int, whitelist_token['address'])
+                url = get_url_by_tx(tx)
+                if check_tx_status(tx) == True:
+                    withdraw_balance_by_t_username(tx, user.username, withdraw_amount_int, whitelist_token['symbol'])
+                    reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
+                    await send_html(update, RESPONSE_WITHDRAW_SUCCESS.format(amount=human_format(withdraw_amount_int), symbol = whitelist_token['symbol'], url=url), reply_markup=reply_markup)
+                else:
+                    reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
+                    await send_text(update, RESPONSE_WITHDRAW_FAILED.format(amount=human_format(withdraw_amount_int), symbol = whitelist_token['symbol'], url=url), reply_markup=reply_markup)
 
         else:
             set_command_by_t_username(user.username, WITHDRAW_BUTTON_ON_ADDRESS)

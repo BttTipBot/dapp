@@ -64,7 +64,7 @@ def transfer_erc20_balance(erc20, sender, receiver, amount, pk):
 
     # Get the balance
     decimals = contract.functions.decimals().call()
-    amount = amount * 10**decimals
+    amount = int(amount * 10**decimals)
 
     addressReceiver = w3.to_checksum_address(receiver)
     addressSender = w3.to_checksum_address(sender)
@@ -109,7 +109,7 @@ def approve_erc20(token_address, ca, amount, address_in, pk):
 
     # Get the balance
     decimals = contract.functions.decimals().call()
-    amount = amount * 10**decimals
+    amount = int(amount * 10**decimals)
     addressSender = w3.to_checksum_address(address_in)
     contractAddress = w3.to_checksum_address(ca)
     nonce = w3.eth.get_transaction_count(addressSender)

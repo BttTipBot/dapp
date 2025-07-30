@@ -379,7 +379,7 @@ def deposit_erc20(amount, address_in, pk, token):
     token_contract = w3.eth.contract(address=token_address, abi=cache_erc20_abi)
     decimals = token_contract.functions.decimals().call()
 
-    amount_wei = amount * 10**decimals
+    amount_wei = int(amount * 10**decimals)
     tx_hash = contract.functions.depositERC20(token_address, amount_wei).build_transaction({"chainId": Chain_id, "from": addressSender, "nonce": nonce, "gasPrice": 50000000000000000})
 
     # Sign the transaction
@@ -438,7 +438,7 @@ def withdraw_erc20(amount, address_in, pk, token):
     token_contract = w3.eth.contract(address=token_address, abi=cache_erc20_abi)
     decimals = token_contract.functions.decimals().call()
 
-    amount_wei = amount * 10**decimals
+    amount_wei = int(amount * 10**decimals)
     tx_hash = contract.functions.withdrawERC20(token_address, amount_wei).build_transaction({"chainId": Chain_id, "from": addressSender, "nonce": nonce, "gasPrice": 50000000000000000})
 
     # Sign the transaction
@@ -498,7 +498,7 @@ def top_up_erc20(amount, address_in, pk, token):
     token_contract = w3.eth.contract(address=token_address, abi=cache_erc20_abi)
     decimals = token_contract.functions.decimals().call()
 
-    amount_wei = amount * 10**decimals
+    amount_wei = int(amount * 10**decimals)
     tx_hash = contract.functions.topUpERC20(token_address, amount_wei).build_transaction({"chainId": Chain_id, "from": addressSender, "nonce": nonce, "gasPrice": 50000000000000000})
 
     # Sign the transaction
@@ -557,7 +557,7 @@ def tip_erc20_call(amount, address_in, receiver, pk, token):
     token_contract = w3.eth.contract(address=token_address, abi=cache_erc20_abi)
     decimals = token_contract.functions.decimals().call()
 
-    amount_wei = amount * 10**decimals
+    amount_wei = int(amount * 10**decimals)
     tx_hash = contract.functions.tipERC20(token_address, receiverAddress, amount_wei).build_transaction({"chainId": Chain_id, "from": addressSender, "nonce": nonce, "gasPrice": 50000000000000000})
 
     # Sign the transaction
@@ -622,7 +622,7 @@ def withdraw_top_up_erc20_tip(receiver, amount, token):
     token_contract = w3.eth.contract(address=token_address, abi=cache_erc20_abi)
     decimals = token_contract.functions.decimals().call()
 
-    amount_wei = amount * 10**decimals
+    amount_wei = int(amount * 10**decimals)
     tx_hash = contract.functions.tipTopUpERC20(token_address, receiverAddress, amount_wei).build_transaction({"chainId": Chain_id, "from": addressSender, "nonce": nonce, "gasPrice": 50000000000000000})
 
     # Sign the transaction

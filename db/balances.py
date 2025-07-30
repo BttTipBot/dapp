@@ -66,6 +66,6 @@ def get_balance_by_t_username(t_username, currency="BTT"):
         balance_ref = db.collection('BALANCE').where('user_id','==', user_id).where('currency', '==', currency)
         balance_data = balance_ref.get()
         if len(balance_data) > 0:
-            return int(balance_data[0].get('balance'))
-    return 0
+            return balance_data[0].get('balance')
+    return 0.0
 

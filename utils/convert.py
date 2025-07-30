@@ -11,6 +11,8 @@ def convert_to_int(amount):
         return int(float(amount.replace('m', '').replace('M', '')) * 1000000)
     elif 'b' in amount.lower():
         return int(float(amount.replace('b', '').replace('B', '')) * 1000000000)
+    elif '.' in amount.lower():
+        return float(amount) 
     else:
         return int(float(amount))  # Convert to float first to remove decimals, then convert to int
 
@@ -32,9 +34,13 @@ def human_format(num):
         num_l /= 1000.0
     aprox = '%.2f%s' % (num_l, ['', 'K', 'M', 'B', 'T'][magnitude])
 
-    # Create a string with commas every 3 digits from num
-    str_num = str(num)
-    comma = "{:,}".format(int(str_num.split(".")[0]))
-    
+    # Format with commas and preserve decimals
+    num_float = float(num)
+    if num_float == int(num_float):
+        # It's a whole number
+        comma = "{:,.0f}".format(num_float)
+    else:
+        # It has decimals
+        comma = "{:,.6f}".format(num_float)
                         
     return f'{comma} ({aprox})'
