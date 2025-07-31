@@ -2,9 +2,9 @@
 from datetime import datetime
 
 from db.firebase import db
-from constants.globals import USER_NOT_FOUND, USER_NO_TRANSACTION
+from constants.globals import USER_NOT_FOUND, USER_NO_TRANSACTION, MAIN_SYMBOL
 
-def record_history_transaction(user_id, amount, transaction_type, currency="BTT"):
+def record_history_transaction(user_id, amount, transaction_type, currency=MAIN_SYMBOL):
     # Record the transaction in the HISTORY collection
     date_recorded = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     history_ref = db.collection('HISTORY')

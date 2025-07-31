@@ -35,7 +35,7 @@ from constants.globals import (
     MESSAGE_WALLET_WITHDRAW,
     MESSAGE_WALLET_INSUFFICIENT_TIP,
     USER_MAIN_MENU_BUTTON,
-    BTT_SYMBOL
+    MAIN_SYMBOL
 )
 from constants.responses import (
     TEXT_INVALID_AMOUNT,
@@ -135,7 +135,7 @@ async def wallet_options(update, context):
                 msg_wait = await send_animation(
                     update, 
                     animation=file,
-                    caption="\n\n Please wait while we query the #BttNetwork ... \n\n ",
+                    caption="\n\n Please wait while we query the #" + MAIN_SYMBOL + "Network ... \n\n ",
                     reply_markup=reply_markup
                 )
             except Exception as e:
@@ -224,7 +224,7 @@ async def wallet_deposit(update, context):
                     symbol_name = input.split(" ")[1]
                 else:
                     deposited_amount = input
-                    symbol_name = "btt"
+                    symbol_name = MAIN_SYMBOL
                 whitelist_token = get_whitelist_token_by_symbol(symbol_name)
 
                 # Check if the amount is a valid number or contains digits and b,
@@ -251,7 +251,7 @@ async def wallet_deposit(update, context):
                         print(f"wallet_deposit msg_wait Error: {e}")
                     
                     print(f"whitelist_token['symbol']: {whitelist_token['symbol']}")    
-                    if whitelist_token['symbol'] == BTT_SYMBOL:
+                    if whitelist_token['symbol'] == MAIN_SYMBOL:
                         balance = get_balance(my_wallet['address'])
                     else:
                         balance = get_erc20_balance(whitelist_token['address'], my_wallet['address'])
@@ -261,7 +261,7 @@ async def wallet_deposit(update, context):
                     else:
 
                         # Deposit the amount to the wallet
-                        if whitelist_token['symbol'] == BTT_SYMBOL:
+                        if whitelist_token['symbol'] == MAIN_SYMBOL:
                             tx = deposit_tip(deposited_amount_int, my_wallet['address'], my_wallet['pk'])
                         else:
                             tx = deposit_erc20(deposited_amount_int, my_wallet['address'], my_wallet['pk'], whitelist_token['address'])
@@ -320,7 +320,7 @@ async def wallet_withdraw(update, context):
                     symbol_name = input.split(" ")[1]
                 else:
                     withdraw_amount = input
-                    symbol_name = "btt"
+                    symbol_name = MAIN_SYMBOL
                 whitelist_token = get_whitelist_token_by_symbol(symbol_name)
 
                 if is_int(withdraw_amount) == False:
@@ -345,7 +345,7 @@ async def wallet_withdraw(update, context):
                             msg_wait = None
                             print(f"wallet_withdraw msg_wait Error: {e}")
 
-                        if whitelist_token['symbol'] == BTT_SYMBOL:
+                        if whitelist_token['symbol'] == MAIN_SYMBOL:
                             balance = get_tip_balance(my_wallet['address'])
                         else:
                             balance = get_tip_erc20_balance(whitelist_token['address'], my_wallet['address'])
@@ -355,7 +355,7 @@ async def wallet_withdraw(update, context):
                             await send_text(update, MESSAGE_WALLET_INSUFFICIENT_TIP.format(balance=human_format(balance), symbol = whitelist_token['symbol']))
                         else:
                             # Deposit the amount to the wallet
-                            if whitelist_token['symbol'] == BTT_SYMBOL:
+                            if whitelist_token['symbol'] == MAIN_SYMBOL:
                                 tx = withdraw_tip(withdraw_amount_int, my_wallet['address'], my_wallet['pk'])
                             else:
                                 tx = withdraw_erc20(withdraw_amount_int, my_wallet['address'], my_wallet['pk'], whitelist_token['address'])
@@ -417,7 +417,7 @@ async def wallet_onchain_transfer(update, context):
                     address = input.split(" ")[2]
                 else:
                     amount = input
-                    symbol_name = "btt"
+                    symbol_name = MAIN_SYMBOL
                     address = ""
                 whitelist_token = get_whitelist_token_by_symbol(symbol_name)
 
@@ -442,7 +442,7 @@ async def wallet_onchain_transfer(update, context):
                         msg_wait = None
                         print(f"wallet_onchain_transfer msg_wait Error: {e}")
 
-                    if whitelist_token['symbol'] == BTT_SYMBOL:
+                    if whitelist_token['symbol'] == MAIN_SYMBOL:
                         balance = get_balance(my_wallet['address'])
                     else:
                         balance = get_erc20_balance(whitelist_token['address'], my_wallet['address'])
@@ -452,7 +452,7 @@ async def wallet_onchain_transfer(update, context):
                         await send_text(update, MESSAGE_WALLET_INSUFFICIENT_BALANCE.format(balance=human_format(balance), symbol = whitelist_token['symbol']))
                     else:
                         # Deposit the amount to the wallet
-                        if whitelist_token['symbol'] == BTT_SYMBOL:
+                        if whitelist_token['symbol'] == MAIN_SYMBOL:
                             tx = transfer_eth(my_wallet['address'], address, amount_int, my_wallet['pk'])
                         else:
                             tx = transfer_erc20_balance(whitelist_token['address'], my_wallet['address'], address, amount_int, my_wallet['pk'])
@@ -513,7 +513,7 @@ async def wallet_topup(update, context):
                     symbol_name = input.split(" ")[1]
                 else:
                     withdraw_amount = input
-                    symbol_name = "btt"
+                    symbol_name = MAIN_SYMBOL
                 whitelist_token = get_whitelist_token_by_symbol(symbol_name)
 
                 if is_int(withdraw_amount) == False:
@@ -523,7 +523,7 @@ async def wallet_topup(update, context):
                 else:
                     wallet_name = arguments[0].replace(WALLET_TOPUP_BUTTON, "")
                     my_wallet = next((wallet for wallet in wallets if wallet['name'] == wallet_name), None)
-                    if whitelist_token['symbol'] == BTT_SYMBOL:
+                    if whitelist_token['symbol'] == MAIN_SYMBOL:
                         balance = get_tip_balance(my_wallet['address'])
                     else:
                         balance = get_tip_erc20_balance(whitelist_token['address'], my_wallet['address'])
@@ -545,7 +545,7 @@ async def wallet_topup(update, context):
 
                         # Deposit the amount to the wallet
                         set_command_by_t_username(user.username, WALLET_SELECT_BUTTON + wallet_name)
-                        if whitelist_token['symbol'] == BTT_SYMBOL:
+                        if whitelist_token['symbol'] == MAIN_SYMBOL:
                             tx = top_up_tip(withdraw_amount_int, my_wallet['address'], my_wallet['pk'])
                         else:
                             tx = top_up_erc20(withdraw_amount_int, my_wallet['address'], my_wallet['pk'], whitelist_token['address'])

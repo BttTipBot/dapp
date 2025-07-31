@@ -1,3 +1,4 @@
+from constants.globals import MAIN_SYMBOL
 
 WALLET_NOT_FOUND = "Wallet not found {wallet}. Please select one of the available wallets or create a new one. 🤕 \n"
 INSUFFICIENT_BALANCE = "Insufficient balance 🤕 \n"
@@ -10,10 +11,10 @@ TEXT_INVALID_AMOUNT_ADDRESS = "The {text} could not be parsed as a valid address
 TEXT_INVALID_AMOUNT_ADDRESS_SYMBOL = "The {text} could not be parsed as a valid address fallowed by a valid amount and a valid symbol. 🤕 \n"
 
 EXAMPLE_AMOUNT = "\n\n Example: 1000, 1k, 1m, 1b \n"
-EXAMPLE_AMOUNT_SYMBOL = "\n\n Example: 1000 $HTX, 1k $BTT, 1m $USDT, 1b $USDC \n"
+EXAMPLE_AMOUNT_SYMBOL = "\n\n Example: 1000 $USDT, 1k $" + MAIN_SYMBOL + ", 1m $USDT, 1b $USDC \n"
 EXAMPLE_ADDRESS = "\n\n Example: 0x1234... \n"
 EXAMPLE_ADDRESS_AMOUNT = "\n\n Example: 0x1234... 1000 \n"
-EXAMPLE_ADDRESS_AMOUNT_SYMBOL = "\n\n Example: '0x1234... 1m $HTX', '0x1234... 10k $Btt' \n"
+EXAMPLE_ADDRESS_AMOUNT_SYMBOL = "\n\n Example: '0x1234... 1m $USDT', '0x1234... 10k $" + MAIN_SYMBOL + "' \n"
 
 
 # Messages Wallet
@@ -128,44 +129,44 @@ Wallet {wallet} deleted. 🎉
 
 # Messages Withdraw
 RESPONSE_WITHDRAW_OPTIONS = """
-Withdraw 📥 $BTT to your wallet⛓️. 
+Withdraw 📥 $""" + MAIN_SYMBOL + """ to your wallet⛓️. 
 
 Withdrawal options:
 - Withdraw to an address (provide an address)
 - Withdraw to a wallet (select one of your wallets)
 
-Withdrawing $BTT comes with a fee of 5% of the amount.
+Withdrawing $""" + MAIN_SYMBOL + """ comes with a fee of 5% of the amount.
 """
 
 RESPONSE_WITHDRAW_MINIMUM = """
-The minimum amount to withdraw is {amount} $BTT 
-You have {balance} $BTT \n\n\n
+The minimum amount to withdraw is {amount} $""" + MAIN_SYMBOL + """ 
+You have {balance} $""" + MAIN_SYMBOL + """ \n\n\n
 
 This amount is for paying the fee
 Insufficient balance. 🤕 \n\n\n
 """
 
 RESPONSE_WITHDRAW_INPUT_AMOUNT = """
-🏧 Withdraw 📥 $BTT & BRC20 tokens to your wallet⛓️. \n\n\n
+🏧 Withdraw 📥 $""" + MAIN_SYMBOL + """ & ERC20 tokens to your wallet⛓️. \n\n\n
 
 Provide the amount you want to withdraw.
 """ + EXAMPLE_AMOUNT
 
 
 RESPONSE_WITHDRAW_INPUT_AMOUNT_SYMBOL = """
-🏧 Withdraw 📥 $BTT & BRC20 tokens to your wallet⛓️. \n\n\n
+🏧 Withdraw 📥 $""" + MAIN_SYMBOL + """ & ERC20 tokens to your wallet⛓️. \n\n\n
 
 Provide the amount you want to withdraw and the symbol.
 """ + EXAMPLE_AMOUNT_SYMBOL
 
 RESPONSE_WITHDRAW_INPUT_AMOUNT_ADDRESS = """
-🏧 Withdraw 📥 $BTT & BRC20 tokens to your wallet⛓️. \n\n\n
+🏧 Withdraw 📥 $""" + MAIN_SYMBOL + """ & ERC20 tokens to your wallet⛓️. \n\n\n
 
 Provide the address and the amount you want to withdraw.
 """ + EXAMPLE_ADDRESS_AMOUNT
 
 RESPONSE_WITHDRAW_INPUT_AMOUNT_ADDRESS_SYMBOL = """
-🏧 Withdraw 📥 $BTT & BRC20 tokens to your wallet⛓️. \n\n\n
+🏧 Withdraw 📥 $""" + MAIN_SYMBOL + """ & ERC20 tokens to your wallet⛓️. \n\n\n
 
 Provide the address and the amount and the symbol you want to withdraw.
 """ + EXAMPLE_ADDRESS_AMOUNT_SYMBOL
@@ -194,17 +195,16 @@ It is still in your wallet.
 # Messages Balance
 RESPONSE_BALANCE_MAIN = """
 💰 Balance Telegram
-- used for /tip 5 $BTT fee
-- used for /airdrop 100 $BTT fee
-- used for /rain 100 $BTT fee
+- used for /tip
+- used for /airdrop
+- used for /rain
 
-Your balance is {balance} $BTT
+Your balance is {balance} $""" + MAIN_SYMBOL + """
 """
 
 RESPONSE_BALANCE_MAIN_ONCHAIN = """
-
-
-💰⛓ Balance on #BitTorrent
+---------------------------------
+💰⛓ Balance on #""" + MAIN_SYMBOL + """ Network
 - used for /tipOnChain 5% fee for $TIP plus blockchain fees
 - used for /airdropOnChain 5% fee for $TIP plus blockchain fees
 - used for /rainOnChain 5% fee for $TIP plus blockchain fees
@@ -214,13 +214,13 @@ Wallets 👛 """
 RESPONSE_BALANCE_MAIN_ONCHAIN_WALLET = """
 
 ⛓🔒 Your #{wallet} 
-    Balance is {balance} $BTT
+    Balance is {balance} $""" + MAIN_SYMBOL + """
 """
 
 RESPONSE_BALANCE_MAIN_ONCHAIN_TIPBOT = """
 
     TipBot SmartContract 📜🤖
-    Balance is {balance} $BTT
+    Balance is {balance} $""" + MAIN_SYMBOL + """
 """
 RESPONSE_BALANCE_ERC20_TELEGRAM = \
 """🛫{balance} {symbol} \n"""
@@ -238,7 +238,7 @@ RESPONSE_BALANCE_ERC20_TIPBOT = \
 RESPONSE_HELP_MAIN = """
 ❓ Help
 Tip BOT 🤖 is a bot that allows tips within groups.
-It uses multi wallets and the BTT token to send tips on chain. 
+It uses multi wallets and the """ + MAIN_SYMBOL + """ token to send tips on chain. 
 
 Commands 👾:
 /tip amount @user - tip a user

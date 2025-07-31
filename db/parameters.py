@@ -15,8 +15,8 @@ def set_param(param_id, value):
 
 # Add a new parameter to the database
 def add_param(param_id, value):
-    # Add a new parameter to the Firestore database
-    db.collection('PARAMETER').add({
+    # Add a new parameter to the Firestore database using param_id as document name
+    db.collection('PARAMETER').document(param_id).set({
         'param_id': param_id,
         'value': value
     })

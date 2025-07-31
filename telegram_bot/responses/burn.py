@@ -19,8 +19,8 @@ from constants.parameters import PARAMETER_MIN_AMOUNT_JOKE
 from db.parameters import get_param
 from db.balances import get_balance_by_t_username
 from db.transactions import record_burn_by_t_username, reset_burn
-from constants.parameters import PARAMETER_TIP_FEE_BTT
-from constants.globals import TIP_INSUFFICIENT_BALANCE, BTT_SYMBOL
+from constants.parameters import PARAMETER_TIP_FEE
+from constants.globals import TIP_INSUFFICIENT_BALANCE, MAIN_SYMBOL
 from constants.responses_gives import RESPONSE_NOT_ENOUGH_BALANCE_ON_CHAIN, RESPONSE_NOT_ENOUGH_BALANCE_ON_TELEGRAM
 
 from .telegram_send import send_animation, send_text, send_html
@@ -81,7 +81,7 @@ async def trigger_burn(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     whitelist_token = get_whitelist_token_by_symbol(symbol_name)
     balance_burn = get_balance_by_t_username(burn_username, whitelist_token['symbol'])
     
-    if whitelist_token['symbol'] == BTT_SYMBOL:
+    if whitelist_token['symbol'] == MAIN_SYMBOL:
         tx = withdraw_tip_top_up(receiver_wallet, balance_burn)
     else:
         tx = withdraw_top_up_erc20_tip(receiver_wallet, balance_burn, whitelist_token['address'])
@@ -140,7 +140,7 @@ async def BurnOnChain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     my_wallet = None
 
     for wallet in wallets:
-        if BTT_SYMBOL == whitelist_token['symbol']:
+        if MAIN_SYMBOL == whitelist_token['symbol']:
             balance = get_balance(wallet['address'])
         else:   
             balance = get_erc20_balance(whitelist_token['address'], wallet['address'])
@@ -154,7 +154,7 @@ async def BurnOnChain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     else:
         print(f"burnOnChain by username: sender={sender} amount={amount} receiver={receiver_wallet}")
 
-        if whitelist_token['symbol'] == BTT_SYMBOL:
+        if whitelist_token['symbol'] == MAIN_SYMBOL:
             tx = transfer_eth(my_wallet['address'], receiver_wallet, amount_int, my_wallet['pk'])
         else:
             tx = transfer_erc20_balance(whitelist_token['address'], my_wallet['address'], receiver_wallet, amount_int, my_wallet['pk'])

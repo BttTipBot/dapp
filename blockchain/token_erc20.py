@@ -64,13 +64,28 @@ def transfer_erc20_balance(erc20, sender, receiver, amount, pk):
 
     # Get the balance
     decimals = contract.functions.decimals().call()
-    amount = int(amount * 10**decimals)
+    amount_wei = int(amount * 10**decimals)
 
     addressReceiver = w3.to_checksum_address(receiver)
     addressSender = w3.to_checksum_address(sender)
 
     nonce = w3.eth.get_transaction_count(addressSender)
-    tx_hash = contract.functions.transfer(addressReceiver, amount).build_transaction({"chainId": Chain_id, "from": addressSender, "nonce": nonce, "gasPrice": 50000000000000000})
+
+    # Estimate gas
+    gas_estimate = contract.functions.transfer(addressReceiver, amount_wei).estimate_gas({
+        "from": addressSender
+    })
+    
+    gas_with_buffer = int(gas_estimate * 1.2)
+    gas_price = w3.eth.gas_price
+
+    tx_hash = contract.functions.transfer(addressReceiver, amount_wei).build_transaction({
+        "chainId": Chain_id, 
+        "from": addressSender, 
+        "nonce": nonce, 
+        "gas": gas_with_buffer,
+        "gasPrice": gas_price
+    })
 
     # Sign the transaction
     signed_tx = w3.eth.account.sign_transaction(tx_hash, private_key=pk)
@@ -109,11 +124,27 @@ def approve_erc20(token_address, ca, amount, address_in, pk):
 
     # Get the balance
     decimals = contract.functions.decimals().call()
-    amount = int(amount * 10**decimals)
+    amount_wei = int(amount * 10**decimals)
     addressSender = w3.to_checksum_address(address_in)
     contractAddress = w3.to_checksum_address(ca)
     nonce = w3.eth.get_transaction_count(addressSender)
-    tx_hash = contract.functions.approve(contractAddress, amount).build_transaction({"chainId": Chain_id, "from": addressSender, "nonce": nonce, "gasPrice": 50000000000000000})
+    
+
+    # Estimate gas
+    gas_estimate = contract.functions.approve(contractAddress, amount_wei).estimate_gas({
+        "from": addressSender
+    })
+    
+    gas_with_buffer = int(gas_estimate * 1.2)
+    gas_price = w3.eth.gas_price
+
+    tx_hash = contract.functions.approve(contractAddress, amount_wei).build_transaction({
+        "chainId": Chain_id, 
+        "from": addressSender, 
+        "nonce": nonce, 
+        "gas": gas_with_buffer,
+        "gasPrice": gas_price
+    })
 
     # Sign the transaction
     signed_tx = w3.eth.account.sign_transaction(tx_hash, private_key=pk)

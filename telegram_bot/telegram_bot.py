@@ -40,7 +40,7 @@ from .responses.airdrop import airdrop
 from .responses.hi import good_morning, good_night, hello
 from .responses.balance import balance, balance_telegram
 from .responses.history import history
-from .responses.withdraw import withdraw_btt, withdraw_btt_in_address, withdraw_btt_in_wallet
+from .responses.withdraw import withdraw_user, withdraw_user_in_address, withdraw_user_in_wallet
 from .responses.help import help_command
 from .responses.fallback import fallback_handler
 from .responses.howto import how_to_deposit, how_to_top_up
@@ -100,7 +100,7 @@ def run_bot_telegram() -> None:
     application.add_handler(MessageHandler(filters.Regex(f'^{USER_HELP_BUTTON}$'), help_command))
     application.add_handler(MessageHandler(filters.Regex(f'^{USER_BALANCE_BUTTON}$'), balance))
     application.add_handler(MessageHandler(filters.Regex(f'^{USER_HISTORY_BUTTON}$'), history))
-    application.add_handler(MessageHandler(filters.Regex(f'{WITHDRAW_BUTTON}'), withdraw_btt))
+    application.add_handler(MessageHandler(filters.Regex(f'{WITHDRAW_BUTTON}'), withdraw_user))
 
     #Wallet
     application.add_handler(MessageHandler(filters.Regex(f'^{WALLET_BUTTON}$'), wallet_private))
@@ -118,8 +118,8 @@ def run_bot_telegram() -> None:
     application.add_handler(MessageHandler(filters.Regex(f'^{WALLET_GENERATE_BUTTON}$'), wallet_generate_address))
     application.add_handler(MessageHandler(filters.Regex(f'^{WALLET_IMPORT_BUTTON}$'), wallet_import_address))
 
-    application.add_handler(MessageHandler(filters.Regex(f'^{WITHDRAW_BUTTON_ON_ADDRESS}$'), withdraw_btt_in_address))
-    application.add_handler(MessageHandler(filters.Regex(f'{WITHDRAW_BUTTON_ON_ACCOUNT}'), withdraw_btt_in_wallet))
+    application.add_handler(MessageHandler(filters.Regex(f'^{WITHDRAW_BUTTON_ON_ADDRESS}$'), withdraw_user_in_address))
+    application.add_handler(MessageHandler(filters.Regex(f'{WITHDRAW_BUTTON_ON_ACCOUNT}'), withdraw_user_in_wallet))
 
 
     # application.add_handler(MessageHandler(filters.Regex(f'^{WALLET_IMPORT_BUTTON}$'), wallet_import_address))

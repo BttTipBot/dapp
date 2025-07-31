@@ -7,13 +7,14 @@ from db.users import get_or_create_user
 from db.parameters import get_param
 from db.balances import get_balance_by_t_username
 
-from constants.parameters import PARAMETER_WELCOME_BONUS, PARAMETER_TIP_FEE_BTT, PARAMETER_RAIN_FEE_BTT, PARAMETER_AIRDROP_FEE_BTT
+from constants.parameters import PARAMETER_WELCOME_BONUS, PARAMETER_TIP_FEE, PARAMETER_RAIN_FEE, PARAMETER_AIRDROP_FEE
+from constants.globals import MAIN_SYMBOL
 from utils.convert import human_format
 from utils.shorts import get_short_tx
 
 from constants.globals import USER_NEW_USER_ADDED, USER_WELCOME_BONUS_MESSAGE
 
-def record_transaction_by_t_username(t_username, amount, transaction_type='transaction telegram', currency='BTT'):
+def record_transaction_by_t_username(t_username, amount, transaction_type='transaction telegram', currency=MAIN_SYMBOL):
     user_ref = db.collection('USERS').where('t_username', '==', t_username).limit(1)
     user_data = user_ref.get()
 
@@ -39,7 +40,7 @@ def record_transaction_by_t_username(t_username, amount, transaction_type='trans
             'balance': amount
             })
 
-def record_global_top_up_by_t_username(t_username, amount, currency='BTT'):
+def record_global_top_up_by_t_username(t_username, amount, currency=MAIN_SYMBOL):
     user_ref = db.collection('USERS').where('t_username', '==', t_username).limit(1)
     user_data = user_ref.get()
 
@@ -55,7 +56,7 @@ def record_global_top_up_by_t_username(t_username, amount, currency='BTT'):
             'date_recorded': date_recorded,
         })
 
-def record_global_withdraw_by_t_username(t_username, amount, currency='BTT'):
+def record_global_withdraw_by_t_username(t_username, amount, currency=MAIN_SYMBOL):
     user_ref = db.collection('USERS').where('t_username', '==', t_username).limit(1)
     user_data = user_ref.get()
 
@@ -71,7 +72,7 @@ def record_global_withdraw_by_t_username(t_username, amount, currency='BTT'):
             'date_recorded': date_recorded,
         })
 
-def record_transaction_by_d_username(d_username, amount, transaction_type='transaction discord', currency='BTT'):
+def record_transaction_by_d_username(d_username, amount, transaction_type='transaction discord', currency=MAIN_SYMBOL):
     # Update the balance based on d_username
     user_ref = db.collection('USERS').where('d_username', '==', d_username).limit(1)
     user_data = user_ref.get()
@@ -94,19 +95,19 @@ def record_transaction_by_d_username(d_username, amount, transaction_type='trans
                 'balance': amount
             })
 
-def top_up_balance_by_t_username(tx, t_username, amount, currency='BTT'):
+def top_up_balance_by_t_username(tx, t_username, amount, currency=MAIN_SYMBOL):
     # Record the top up in the HISTORY collection
     record_transaction_by_t_username(t_username, amount, '💳 top up ' + get_short_tx(tx), currency)
     record_global_top_up_by_t_username(t_username, amount, currency)
 
-def withdraw_balance_by_t_username(tx, t_username, amount, currency='BTT'):
+def withdraw_balance_by_t_username(tx, t_username, amount, currency=MAIN_SYMBOL):
     # Record the top up in the HISTORY collection
-    record_transaction_by_t_username(t_username, -10000, f"🏧⛽ withdraw fee", 'BTT')
+    record_transaction_by_t_username(t_username, -10000, f"🏧⛽ withdraw fee", MAIN_SYMBOL)
     record_transaction_by_t_username(t_username, -amount, '🏧 withdraw ' + get_short_tx(tx), currency)
     record_global_top_up_by_t_username(t_username, -amount, currency)
 
 
-def record_tip_by_t_username(t_username_sender, t_username_receiver, amount, currency='BTT'):
+def record_tip_by_t_username(t_username_sender, t_username_receiver, amount, currency=MAIN_SYMBOL):
     # Record the tip in the HISTORY collection
     result = get_or_create_user(t_username=t_username_sender)
     if result == USER_NEW_USER_ADDED:
@@ -116,11 +117,11 @@ def record_tip_by_t_username(t_username_sender, t_username_receiver, amount, cur
         record_welcome_bonus_by_t_username(t_username_sender)
 
     # balance_sender = get_balance_by_t_username(t_username_sender, currency)
-    fee = int(get_param(PARAMETER_TIP_FEE_BTT))
+    fee = int(get_param(PARAMETER_TIP_FEE))
 
     # if balance_sender + fee < amount:
     #     return TIP_INSUFFICIENT_BALANCE.format(balance=balance_sender, max=balance_sender)
-    record_transaction_by_t_username(t_username_sender, -fee, f'you paid a fee for tipping telegram@{t_username_receiver} ⛽💸', 'BTT')
+    record_transaction_by_t_username(t_username_sender, -fee, f'you paid a fee for tipping telegram@{t_username_receiver} ⛽💸', MAIN_SYMBOL)
     record_transaction_by_t_username(t_username_sender, -amount, f'you tip telegram@{t_username_receiver} 💸', currency)
     record_transaction_by_t_username(t_username_receiver, amount, f'you were tip by telegram@{t_username_sender} 🤑', currency)
 
@@ -128,7 +129,7 @@ def record_tip_by_t_username(t_username_sender, t_username_receiver, amount, cur
 
 
 
-def record_burn_by_t_username(t_username_sender, t_username_receiver, amount, currency='BTT'):
+def record_burn_by_t_username(t_username_sender, t_username_receiver, amount, currency=MAIN_SYMBOL):
 
     # if balance_sender + fee < amount:
     #     return TIP_INSUFFICIENT_BALANCE.format(balance=balance_sender, max=balance_sender)
@@ -141,7 +142,7 @@ def record_burn_by_t_username(t_username_sender, t_username_receiver, amount, cu
     record_transaction_by_t_username(t_username_receiver, amount, f'🔥🔥🔥 burn', currency)
  
 
-def record_dice_by_t_username(t_username_sender, dice_user_pool, amount, currency='BTT'):
+def record_dice_by_t_username(t_username_sender, dice_user_pool, amount, currency=MAIN_SYMBOL):
     result = get_or_create_user(t_username=t_username_sender)
     if result == USER_NEW_USER_ADDED:
         record_welcome_bonus_by_t_username(t_username_sender)
@@ -151,20 +152,20 @@ def record_dice_by_t_username(t_username_sender, dice_user_pool, amount, currenc
     record_transaction_by_t_username(dice_user_pool, amount, f'🎲🎰 fee from telegram@{t_username_sender}', currency)
   
  
-def record_dice_winner_by_t_username(t_username_sender, dice_user_pool, amount, currency='BTT'):
+def record_dice_winner_by_t_username(t_username_sender, dice_user_pool, amount, currency=MAIN_SYMBOL):
     record_transaction_by_t_username(t_username_sender, amount, f'🎲🎉 dice winner', currency)
     record_transaction_by_t_username(dice_user_pool, -amount, f'🎲🎉 win telegram@{t_username_sender}', currency)
 
-def reset_burn(t_username_sender, amount, currency='BTT'):
+def reset_burn(t_username_sender, amount, currency=MAIN_SYMBOL):
     # Reset the burn in the HISTORY collection
     record_transaction_by_t_username(t_username_sender, -amount, f'🔥🔥🔥 burn On Chain', currency)
 
-def record_rain_by_t_username(t_username, users, amount, currency='BTT'):
+def record_rain_by_t_username(t_username, users, amount, currency=MAIN_SYMBOL):
     # Record the rain in the HISTORY collection
 
-    fee = int(get_param(PARAMETER_RAIN_FEE_BTT))
+    fee = int(get_param(PARAMETER_RAIN_FEE))
     record_transaction_by_t_username(t_username, -amount, f"🌧️ rain by telegram@{t_username}", currency)
-    record_transaction_by_t_username(t_username, -fee, f'you paid a fee for rain ⛽🌧️', 'BTT')
+    record_transaction_by_t_username(t_username, -fee, f'you paid a fee for rain ⛽🌧️', MAIN_SYMBOL)
 
     user_amount = amount / len(users) 
 
@@ -177,12 +178,12 @@ def record_rain_by_t_username(t_username, users, amount, currency='BTT'):
 
     return str
 
-def record_airdrop_by_t_username(t_username, users, amount, currency='BTT'):
+def record_airdrop_by_t_username(t_username, users, amount, currency=MAIN_SYMBOL):
     # Record the rain in the HISTORY collection
 
-    fee = int(get_param(PARAMETER_AIRDROP_FEE_BTT))
+    fee = int(get_param(PARAMETER_AIRDROP_FEE))
     record_transaction_by_t_username(t_username, -amount, f"🪂 airdrop by telegram@{t_username}", currency)
-    record_transaction_by_t_username(t_username, -fee, f'you paid a fee for rain ⛽🪂', 'BTT')
+    record_transaction_by_t_username(t_username, -fee, f'you paid a fee for rain ⛽🪂', MAIN_SYMBOL)
 
     # user_amount_point
     print(users)
@@ -201,10 +202,9 @@ def record_airdrop_by_t_username(t_username, users, amount, currency='BTT'):
 
 
 
-def record_welcome_bonus_by_t_username(t_username, currency='BTT'):
+def record_welcome_bonus_by_t_username(t_username, currency=MAIN_SYMBOL):
 
     # PARAMETER
     value_param = get_param(PARAMETER_WELCOME_BONUS)
     # Record the welcome bonus in the HISTORY collection
-    
     record_transaction_by_t_username(t_username, value_param, USER_WELCOME_BONUS_MESSAGE.format(amount=value_param) , currency)

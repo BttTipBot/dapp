@@ -18,7 +18,7 @@ from .wallet_new import (
 
 )
 from .start import start
-from .withdraw import withdraw_btt, withdraw_btt_in_address, withdraw_btt_in_wallet
+from .withdraw import withdraw_user, withdraw_user_in_address, withdraw_user_in_wallet
 from constants.globals import (
     USER_MAIN_MENU_BUTTON,
     WALLET_BUTTON,
@@ -70,9 +70,9 @@ async def fallback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -
         elif command.startswith(WALLET_SELECT_BUTTON):
             await wallet_options(update, context)
         elif command.startswith(WITHDRAW_BUTTON_ON_ADDRESS):
-            await withdraw_btt_in_address(update, context)
+            await withdraw_user_in_address(update, context)
         elif command.startswith(WITHDRAW_BUTTON_ON_ACCOUNT):
-            await withdraw_btt_in_wallet(update, context)
+            await withdraw_user_in_wallet(update, context)
         elif command.startswith(WALLET_DEPOSIT_BUTTON):
             await wallet_deposit(update, context)
         elif command.startswith(WALLET_TOPUP_BUTTON):

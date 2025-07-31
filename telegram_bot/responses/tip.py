@@ -16,8 +16,8 @@ from utils.tokens import get_whitelist_token_by_symbol
 from constants.parameters import PARAMETER_MIN_AMOUNT_JOKE
 from db.parameters import get_param
 from db.balances import get_balance_by_t_username
-from constants.parameters import PARAMETER_TIP_FEE_BTT
-from constants.globals import TIP_INSUFFICIENT_BALANCE, BTT_SYMBOL
+from constants.parameters import PARAMETER_TIP_FEE
+from constants.globals import TIP_INSUFFICIENT_BALANCE, MAIN_SYMBOL
 from constants.responses_gives import RESPONSE_NOT_ENOUGH_BALANCE_ON_CHAIN, RESPONSE_NOT_ENOUGH_BALANCE_ON_TELEGRAM
 
 from .telegram_send import send_animation, send_text, send_html
@@ -36,7 +36,7 @@ async def get_input_arguments(update, context):
             return
     elif len(context.args) == 2:
         amount = context.args[0]
-        symbol_name = "btt"
+        symbol_name = MAIN_SYMBOL
         receiver = context.args[1][1:]
         
         # Case 2. Two arguments are passed 
@@ -58,7 +58,7 @@ async def get_input_arguments(update, context):
     elif len(context.args) == 1 and update.message.reply_to_message is not None:
         print("context.args", context.args)
         amount = context.args[0]
-        symbol_name = "btt"
+        symbol_name = MAIN_SYMBOL
         
         if update.message.reply_to_message is None:
             await send_text(update, 'Usage: /tip <amount> <symbol> @user')
@@ -100,7 +100,7 @@ async def tip(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     whitelist_token = get_whitelist_token_by_symbol(symbol_name)
     amount_int = convert_to_int(amount)
     balance_sender = get_balance_by_t_username(sender, whitelist_token['symbol'])
-    fee = int(get_param(PARAMETER_TIP_FEE_BTT))
+    fee = int(get_param(PARAMETER_TIP_FEE))
 
     # Check if the user has enough balance
     if balance_sender < amount_int:
@@ -137,7 +137,7 @@ async def tipOnChain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
             return
     elif len(context.args) == 2:
         amount = context.args[0]
-        symbol_name = "btt"
+        symbol_name = MAIN_SYMBOL
         receiver = context.args[1][1:]
 
         if(context.args[1][0] != '@'):
@@ -152,7 +152,7 @@ async def tipOnChain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     elif len(context.args) == 1 and update.message.reply_to_message is not None:
         print("context.args", context.args)
         amount = context.args[0]
-        symbol_name = "btt"
+        symbol_name = MAIN_SYMBOL
         
         if update.message.reply_to_message is None:
             await send_text(update, 'Usage: /tipOnChain <amount> <symbol> @user')
@@ -196,7 +196,7 @@ async def tipOnChain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     my_wallet = None
 
     for wallet in wallets:
-        if BTT_SYMBOL == whitelist_token['symbol']:
+        if MAIN_SYMBOL == whitelist_token['symbol']:
             balance = get_tip_balance(wallet['address'])
         else:   
             balance = get_tip_erc20_balance(whitelist_token['address'], wallet['address'])
@@ -210,7 +210,7 @@ async def tipOnChain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     else:
         print(f"TipOnChain by username: sender={sender} amount={amount} receiver={receiver_wallet}")
 
-        if BTT_SYMBOL == whitelist_token['symbol']:
+        if MAIN_SYMBOL == whitelist_token['symbol']:
             tx = tip_call(my_wallet['address'], receiver_wallet['address'], amount_int, my_wallet['pk'])
         else:
             tx = tip_erc20_call(amount_int, my_wallet['address'], receiver_wallet['address'], my_wallet['pk'], whitelist_token['address'])

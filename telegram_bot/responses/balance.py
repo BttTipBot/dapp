@@ -20,6 +20,7 @@ from constants.responses import (
 
 )
 from utils.convert import human_format
+from constants.globals import MAIN_SYMBOL
 
 from .telegram_send import send_animation, send_text
 
@@ -37,7 +38,7 @@ async def balance(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         msg_wait = await send_animation(
             update,
             animation=file,
-            caption="\n\n Please wait while we query the #BttNetwork ... \n\n "
+            caption="\n\n Please wait while we query the #" + MAIN_SYMBOL + "Network ... \n\n "
         )
 
         balance = get_balance_by_t_username(user.username)

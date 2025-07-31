@@ -1,4 +1,4 @@
-
+from constants.globals import MAIN_SYMBOL
 
 
 RESPONSE_NOT_ENOUGH_BALANCE_ON_CHAIN = """
@@ -20,14 +20,14 @@ You will need:
 You only need to click the buttons.
 Generate a new one by (🆕 New Wallet -> 🔑 Generate Wallet -> Write a 'name' )
 
-4. Add some $BTT & BRC20 tokens
+4. Add some $""" + MAIN_SYMBOL + """ & ERC20 tokens
 You can use the QR code or just click on the address to copy it.
 
 5. Deposit
 Click 🛍️ Deposit
 Write the amount and the token symbol
-Example '100k', '1m $HTX', '1k $USDT'...
-Without symbol is $BTT
+Example '100k', '1m $USDT', '1k $USDT'...
+Without symbol is $""" + MAIN_SYMBOL + """
 
 6 The transaction will broadcast 📡 and you will have the amount in your wallet.
 Select again the Wallet (from buttons) and check the balance.
@@ -57,14 +57,14 @@ You will need:
 You only need to click the buttons.
 Generate a new one by (🆕 New Wallet -> 🔑 Generate Wallet -> Write a 'name' )
 
-4. Add some $BTT & BRC20 tokens
+4. Add some $""" + MAIN_SYMBOL + """ & ERC20 tokens
 You can use the QR code or just click on the address to copy it.
 
 5. Deposit
 Click 🛍️ Deposit
 Write the amount and the token symbol
-Example '100k', '1m $HTX', '1k $USDT'...
-Without symbol is $BTT
+Example '100k', '1m $USDT', '1k $USDT'...
+Without symbol is $""" + MAIN_SYMBOL + """
 
 6 The transaction will broadcast 📡 and you will have the amount in your wallet.
 Select again the Wallet (from buttons) and check the balance.
@@ -73,8 +73,8 @@ You will see the transaction in 📜🤖 SmartContract TipBot.
 7. TopUp (You can TopUp only 📜🤖 SmartContract TipBot balances)
 Click 💳 Topup Wallet
 Write the amount and the token symbol
-Example '100k', '1m $HTX', '1k $USDT'...
-Without symbol is $BTT
+Example '100k', '1m $USDT', '1k $USDT'...
+Without symbol is $""" + MAIN_SYMBOL + """
 
 8. Go to the main menu
 🏠 Main Menu or type /start
@@ -105,14 +105,14 @@ You will need:
 You only need to click the buttons.
 Generate a new one by (🆕 New Wallet -> 🔑 Generate Wallet -> Write a 'name' )
 
-4. Add some $BTT & BRC20 tokens
+4. Add some $""" + MAIN_SYMBOL + """ & ERC20 tokens
 You can use the QR code or just click on the address to copy it.
 
 5. Deposit
 Click 🛍️ Deposit
 Write the amount and the token symbol
-Example '100k', '1m $HTX', '1k $USDT'...
-Without symbol is $BTT
+Example '100k', '1m $USDT', '1k $USDT'...
+Without symbol is $""" + MAIN_SYMBOL + """
 
 6 The transaction will broadcast 📡 and you will have the amount in your wallet.
 Select again the Wallet (from buttons) and check the balance.
@@ -140,14 +140,14 @@ You will need:
 You only need to click the buttons.
 Generate a new one by (🆕 New Wallet -> 🔑 Generate Wallet -> Write a 'name' )
 
-4. Add some $BTT & BRC20 tokens
+4. Add some $""" + MAIN_SYMBOL + """ & ERC20 tokens
 You can use the QR code or just click on the address to copy it.
 
 5. Deposit
 Click 🛍️ Deposit
 Write the amount and the token symbol
-Example '100k', '1m $HTX', '1k $USDT'...
-Without symbol is $BTT
+Example '100k', '1m $USDT', '1k $USDT'...
+Without symbol is $""" + MAIN_SYMBOL + """
 
 6 The transaction will broadcast 📡 and you will have the amount in your wallet.
 Select again the Wallet (from buttons) and check the balance.
@@ -156,8 +156,8 @@ You will see the transaction in 📜🤖 SmartContract TipBot.
 7. TopUp (You can TopUp only 📜🤖 SmartContract TipBot balances)
 Click 💳 Topup Wallet
 Write the amount and the token symbol
-Example '100k', '1m $HTX', '1k $USDT'...
-Without symbol is $BTT
+Example '100k', '1m $USDT', '1k $USDT'...
+Without symbol is $""" + MAIN_SYMBOL + """
 
 8. Go to the main menu
 🏠 Main Menu or type /start

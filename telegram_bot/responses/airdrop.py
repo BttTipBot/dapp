@@ -8,11 +8,12 @@ from db.transactions import record_airdrop_by_t_username
 from utils.convert import is_int, convert_to_int, human_format
 from db.parameters import get_param
 from db.balances import get_balance_by_t_username
-from constants.parameters import PARAMETER_AIRDROP_FEE_BTT
+from constants.parameters import PARAMETER_AIRDROP_FEE
 from constants.globals import AIRDROP_INSUFFICIENT_BALANCE
 
 from .telegram_send import send_animation, send_text
 from utils.tokens import get_whitelist_token_by_symbol
+from constants.globals import MAIN_SYMBOL
 
 
 # Define the airdrop function
@@ -27,7 +28,7 @@ async def airdrop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         symbol_name = context.args[1]
     elif len(context.args) == 1:
         amount = context.args[0]
-        symbol_name = 'BTT'
+        symbol_name = MAIN_SYMBOL
     else:
         await send_text(update, 'Usage: /airdrop <amount> <symbol>')
     whitelist_token = get_whitelist_token_by_symbol(symbol_name)

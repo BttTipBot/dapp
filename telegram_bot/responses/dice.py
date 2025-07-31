@@ -11,13 +11,14 @@ from utils.convert import is_int, convert_to_int, human_format
 from db.balances import get_balance_by_t_username
 from utils.tokens import get_whitelist_token_by_symbol
 from db.transactions import record_dice_by_t_username, record_dice_winner_by_t_username
+from constants.globals import MAIN_SYMBOL
 
 
 # Define the start function
 async def dice(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     message_text = update.message.text
     user = update.effective_user
-    dice_price_username = "btt_tip_bot"
+    dice_price_username = MAIN_SYMBOL.lower() + "_tip_bot"
 
     if len(context.args) == 3:
         # List of good night GIF URLs (replace with your own URLs)

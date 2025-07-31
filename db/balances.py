@@ -1,7 +1,8 @@
 
 from db.firebase import db
+from constants.globals import MAIN_SYMBOL
 
-def create_or_update_balance(user_id, currency="BTT", amount=0):
+def create_or_update_balance(user_id, currency=MAIN_SYMBOL, amount=0):
     # Create or update the balance for the user
     balance_ref = db.collection('BALANCE').where('user_id','==', user_id).where('currency', '==', currency)
     balance_data = balance_ref.get()
@@ -15,7 +16,7 @@ def create_or_update_balance(user_id, currency="BTT", amount=0):
             'balance': amount
         })
 
-def create_balance_for_user(user_id, currency="BTT"):
+def create_balance_for_user(user_id, currency=MAIN_SYMBOL):
     # Create a balance for the user
     balance_ref = db.collection('BALANCE')
     balance_ref.add({
@@ -43,7 +44,7 @@ def update_balance_by_d_username(d_username, amount):
         user_ref.document(user_id).update({'balance': user_data[0].get('balance') + amount})
 
 
-def get_balance_by_d_username(d_username, currency="BTT"):
+def get_balance_by_d_username(d_username, currency=MAIN_SYMBOL):
     # Retrieve the balance based on d_username
     user_ref = db.collection('USERS').where('d_username', '==', d_username).limit(1)
     user_data = user_ref.get()
@@ -56,7 +57,7 @@ def get_balance_by_d_username(d_username, currency="BTT"):
             return balance_data[0].get('balance')
     return '0'
 
-def get_balance_by_t_username(t_username, currency="BTT"):
+def get_balance_by_t_username(t_username, currency=MAIN_SYMBOL):
     # Retrieve the balance based on d_username
     user_ref = db.collection('USERS').where('t_username', '==', t_username).limit(1)
     user_data = user_ref.get()

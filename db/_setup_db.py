@@ -3,10 +3,10 @@ from db.parameters import create_or_update_param
 from constants.parameters import (
     PARAMETER_WELCOME_BONUS,
     PARAMETER_MINIMUM_FEES,
-    PARAMETER_MINIMUM_WITHDRAW_BTT,
-    PARAMETER_TIP_FEE_BTT,
-    PARAMETER_RAIN_FEE_BTT,
-    PARAMETER_AIRDROP_FEE_BTT,
+    PARAMETER_MINIMUM_WITHDRAW,
+    PARAMETER_TIP_FEE,
+    PARAMETER_RAIN_FEE,
+    PARAMETER_AIRDROP_FEE,
     PARAMETER_MIN_AMOUNT_JOKE,
     PARAMETER_WHITELIST_ADDRESS,
     PARAMETER_TIP_STANDARD_MESSAGE_1,
@@ -44,17 +44,17 @@ from constants.parameters import (
 
 # Define the parameter ID and value
 all_params = [
-    {"param_id": PARAMETER_WELCOME_BONUS, "value": 300},
-    {"param_id": PARAMETER_MINIMUM_FEES, "value": 100},
-    {"param_id": PARAMETER_MINIMUM_WITHDRAW_BTT, "value": 100000},
-    {"param_id": PARAMETER_TIP_FEE_BTT, "value": 5},
-    {"param_id": PARAMETER_RAIN_FEE_BTT, "value": 100},
-    {"param_id": PARAMETER_AIRDROP_FEE_BTT, "value": 100},
-    {"param_id": PARAMETER_MIN_AMOUNT_JOKE, "value": 1000},
+    {"param_id": PARAMETER_WELCOME_BONUS, "value": 0.1},
+    {"param_id": PARAMETER_MINIMUM_FEES, "value": 0.1},
+    {"param_id": PARAMETER_MINIMUM_WITHDRAW, "value": 0.1},
+    {"param_id": PARAMETER_TIP_FEE, "value": 0.1},
+    {"param_id": PARAMETER_RAIN_FEE, "value": 1},
+    {"param_id": PARAMETER_AIRDROP_FEE, "value": 1},
+    {"param_id": PARAMETER_MIN_AMOUNT_JOKE, "value": 10},
     {"param_id": PARAMETER_TIP_EMOJI_STANDARD, "value": "🥴"},
     {"param_id": PARAMETER_TIP_EMOJI_SILVER, "value": "🥈"},
     {"param_id": PARAMETER_TIP_EMOJI_GOLD, "value": "🥇"},
-    {"param_id": PARAMETER_WHITELIST_ADDRESS, "value": "htx:0x31161bc5DaC078dbae525a4fd3b362Fd440658b8|"},
+    {"param_id": PARAMETER_WHITELIST_ADDRESS, "value": "pengo:0x4dcc82dD429e600A8e37c4DC78505beCc6f4858a|"},
     {"param_id": PARAMETER_TIP_STANDARD_MESSAGE_1, "value": "Mmm... Tips. The bacon of the currency world!"},
     {"param_id": PARAMETER_TIP_STANDARD_MESSAGE_2, "value": "Woo-hoo! With this tip, I can finally buy that inflatable donut for the pool!"},
     {"param_id": PARAMETER_TIP_STANDARD_MESSAGE_3, "value": "Ah, the sweet sound of tips... like music to my doughnut-loving ears."},
@@ -87,6 +87,7 @@ all_params = [
 def setup_parameters():
     # Loop through the parameters and create or update them
     for param in all_params:
+        print(f"Setting up parameter {param['param_id']}")
         create_or_update_param(param['param_id'], param['value'])
 
 

@@ -14,11 +14,5 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     # Check if the bot is tagged in the message
     if context.bot.username in message_text or update.message.chat.type == 'private':
         TIP_BOT_URL = os.getenv('TIP_BOT_URL')
-        SUPPORT_DISCORD_URL = os.getenv('SUPPORT_DISCORD_URL')
-        SUPPORT_TELEGRAM_URL = os.getenv('SUPPORT_TELEGRAM_URL')
-        DEPOSIT_WITHOUT_WALLET_URL = os.getenv('DEPOSIT_WITHOUT_WALLET_URL')
-        reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("Support Discord", url=SUPPORT_DISCORD_URL)], 
-                                             [InlineKeyboardButton("Support Telegram", url=SUPPORT_TELEGRAM_URL)], 
-                                             [InlineKeyboardButton("Deposit Website", url=DEPOSIT_WITHOUT_WALLET_URL)]])
-        await send_html(update, RESPONSE_HELP_MAIN.format(urlbot=TIP_BOT_URL), reply_markup=reply_markup)
+        await send_html(update, RESPONSE_HELP_MAIN.format(urlbot=TIP_BOT_URL))
     

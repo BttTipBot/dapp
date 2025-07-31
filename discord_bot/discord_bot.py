@@ -21,12 +21,13 @@ from blockchain.tip_contract import tip_call
 from charts.my_charts import create_chart
 from db.users import get_command_by_t_username, set_command_by_t_username
 from db.balances import get_balance_by_d_username
+from constants.globals import MAIN_SYMBOL
 
 # STEP 0: LOAD OUR TOKEN FROM SOMEWHERE SAFE
 load_dotenv()
 TOKEN: Final[str] = os.getenv('DISCORD_TOKEN')
 
-description = '''Commands for the BTT TIP BOT
+description = '''Commands for the ''' + MAIN_SYMBOL + ''' TIP BOT
 
 Tip, withdraw, deposit, transfer on the go.'''
 
@@ -119,16 +120,10 @@ async def on_ready() -> None:
 # async def flavor(ctx):
 #     await ctx.send("Choose a flavor!", view=MyView())
 
-# #Define the balance command
-# @bot.command(description='Check your balance.')
-# async def balance(ctx):
-#     """Check the balance of the user."""
-#     user = ctx.author
-#     balance = get_balance_by_d_username(user)
-#     await ctx.send(f"Your balance is {balance} BTT.")
+
 
 # Define the tip function
-@bot.command(description='Tips the user with BTT tokens.')
+@bot.command(description='Tips the user with ' + MAIN_SYMBOL + ' tokens.')
 async def tip(ctx, amount: int, receiver: str):
     """Send a tip to a user."""
     sender = ctx.author
@@ -140,10 +135,7 @@ async def tip(ctx, amount: int, receiver: str):
 
     # tx_receipt = tip_call(receiver, amount_in_wei)
 
-    # tx_link = f"https://bttcscan.com/tx/{tx_receipt['transactionHash'].hex()}"
-    # await ctx.send(
-    #     f"Tip successful! [Transaction explorer!]({tx_link})"
-    # )
+
 
 @bot.command(description='Just a simple reply on gm')
 async def gm(ctx):

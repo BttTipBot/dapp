@@ -20,7 +20,7 @@ from constants.globals import (
     WITHDRAW_BUTTON_ON_ADDRESS,
     WITHDRAW_BUTTON_ON_ACCOUNT,
     WALLET_SELECT_BUTTON,
-    BTT_SYMBOL
+    MAIN_SYMBOL
     
 )
 
@@ -42,17 +42,17 @@ from constants.responses import (
 )
 
 
-from constants.parameters import PARAMETER_MINIMUM_WITHDRAW_BTT
+from constants.parameters import PARAMETER_MINIMUM_WITHDRAW
 
 from .telegram_send import send_text, send_html
 
 # Wallet goes to
-async def withdraw_btt(update, context):
+async def withdraw_user(update, context):
     user = update.effective_user
     # Check if the command was sent in a private chat
     if update.message.chat.type == 'private':
         balance = get_balance_by_t_username(user.username)
-        min_balance = int(get_param(PARAMETER_MINIMUM_WITHDRAW_BTT))
+        min_balance = int(get_param(PARAMETER_MINIMUM_WITHDRAW))
 
         if balance < min_balance:
             await context.bot.send_message(user.id, RESPONSE_WITHDRAW_MINIMUM.format(amount=human_format(min_balance), balance=human_format(balance)))
@@ -70,7 +70,7 @@ async def withdraw_btt(update, context):
             await context.bot.send_message(user.id, RESPONSE_WITHDRAW_OPTIONS, reply_markup=reply_markup)
 
 
-async def withdraw_btt_in_wallet(update, context):
+async def withdraw_user_in_wallet(update, context):
     user = update.effective_user
     # Check if the command was sent in a private chat
     if update.message.chat.type == 'private':
@@ -86,7 +86,7 @@ async def withdraw_btt_in_wallet(update, context):
                     symbol_name = input.split(" ")[1]
                 else:
                     withdraw_amount = input
-                    symbol_name = "btt"
+                    symbol_name = MAIN_SYMBOL
                 whitelist_token = get_whitelist_token_by_symbol(symbol_name)
 
                 if is_int(withdraw_amount) == False:
@@ -99,18 +99,18 @@ async def withdraw_btt_in_wallet(update, context):
                     
                     if my_wallet is not None:
                         withdraw_amount_int = convert_to_int(withdraw_amount)
-                        min_balance = int(get_param(PARAMETER_MINIMUM_WITHDRAW_BTT))
-                        balance_btt = get_balance_by_t_username(user.username)
+                        min_balance = int(get_param(PARAMETER_MINIMUM_WITHDRAW))
+                        balance_gas = get_balance_by_t_username(user.username)
                         
-                        if balance_btt is None or balance_btt < min_balance:
+                        if balance_gas is None or balance_gas < min_balance:
                             reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
-                            await context.bot.send_message(user.id, f"Your balance is {human_format(balance_btt)} BTT, less than fee required {human_format(min_balance)} BTT.", reply_markup=reply_markup)
+                            await context.bot.send_message(user.id, f"Your balance is {human_format(balance_gas)} ${MAIN_SYMBOL}, less than fee required {human_format(min_balance)} ${MAIN_SYMBOL}.", reply_markup=reply_markup)
                             return
 
-                        if whitelist_token['symbol'] == BTT_SYMBOL:
-                            if balance_btt < withdraw_amount_int + min_balance:
+                        if whitelist_token['symbol'] == MAIN_SYMBOL:
+                            if balance_gas < withdraw_amount_int + min_balance:
                                 reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
-                                await context.bot.send_message(user.id, f"You have {human_format(balance_btt)} BTT, you need to withdraw at most {human_format((balance_btt - min_balance))} BTT.", reply_markup=reply_markup)
+                                await context.bot.send_message(user.id, f"You have {human_format(balance_gas)} ${MAIN_SYMBOL}, you need to withdraw at most {human_format((balance_gas - min_balance))} ${MAIN_SYMBOL}.", reply_markup=reply_markup)
                                 return
                         else:
                             balance = get_balance_by_t_username(user.username, whitelist_token['symbol'])
@@ -121,7 +121,7 @@ async def withdraw_btt_in_wallet(update, context):
 
                         # Withdraw the amount
                         set_command_by_t_username(user.username, WALLET_SELECT_BUTTON + my_wallet['name'])
-                        if whitelist_token['symbol'] == BTT_SYMBOL:
+                        if whitelist_token['symbol'] == MAIN_SYMBOL:
                             tx = withdraw_tip_top_up(my_wallet['address'], withdraw_amount_int)
                         else:
                             tx = withdraw_top_up_erc20_tip(my_wallet['address'], withdraw_amount_int, whitelist_token['address'])
@@ -147,7 +147,7 @@ async def withdraw_btt_in_wallet(update, context):
                 await context.bot.send_message(user.id, WALLET_NOT_FOUND.format(wallet=wallet_name))
 
 
-async def withdraw_btt_in_address(update, context):
+async def withdraw_user_in_address(update, context):
     user = update.effective_user
     # Check if the command was sent in a private chat
     if update.message.chat.type == 'private':
@@ -165,7 +165,7 @@ async def withdraw_btt_in_address(update, context):
             elif len(update.message.text.split(" "))  == 2:
                 address = update.message.text.split(" ")[0]
                 withdraw_amount = update.message.text.split(" ")[1]
-                symbol_name = "btt"
+                symbol_name = MAIN_SYMBOL
             else:
                 await send_text(update, TEXT_INVALID_AMOUNT_ADDRESS_SYMBOL.format(text=update.message.text) + EXAMPLE_ADDRESS_AMOUNT_SYMBOL)
                 return
@@ -177,18 +177,18 @@ async def withdraw_btt_in_address(update, context):
                 await send_text(update, TEXT_INVALID_TOKEN_SYMBOL.format(text=symbol_name) + EXAMPLE_AMOUNT)
             else:
                 withdraw_amount_int = convert_to_int(withdraw_amount)
-                min_balance = int(get_param(PARAMETER_MINIMUM_WITHDRAW_BTT))
-                balance_btt = get_balance_by_t_username(user.username)
+                min_balance = int(get_param(PARAMETER_MINIMUM_WITHDRAW))
+                balance_gas = get_balance_by_t_username(user.username)
                 
-                if balance_btt is None or balance_btt < min_balance:
+                if balance_gas is None or balance_gas < min_balance:
                     reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
-                    await context.bot.send_message(user.id, f"Your balance is {human_format(balance_btt)} BTT, less than fee required {human_format(min_balance)} BTT.", reply_markup=reply_markup)
+                    await context.bot.send_message(user.id, f"Your balance is {human_format(balance_gas)} ${MAIN_SYMBOL}, less than fee required {human_format(min_balance)} ${MAIN_SYMBOL}.", reply_markup=reply_markup)
                     return
 
-                if whitelist_token['symbol'] == BTT_SYMBOL:
-                    if balance_btt < withdraw_amount_int + min_balance:
+                if whitelist_token['symbol'] == MAIN_SYMBOL:
+                    if balance_gas < withdraw_amount_int + min_balance:
                         reply_markup = ReplyKeyboardMarkup([[USER_MAIN_MENU_BUTTON]], resize_keyboard=True)
-                        await context.bot.send_message(user.id, f"You have {human_format(balance_btt)} BTT, you need to withdraw at most {human_format((balance_btt - min_balance))} BTT.", reply_markup=reply_markup)
+                        await context.bot.send_message(user.id, f"You have {human_format(balance_gas)} ${MAIN_SYMBOL}, you need to withdraw at most {human_format((balance_gas - min_balance))} ${MAIN_SYMBOL}.", reply_markup=reply_markup)
                         return
                 else:
                     balance = get_balance_by_t_username(user.username, whitelist_token['symbol'])
@@ -200,7 +200,7 @@ async def withdraw_btt_in_address(update, context):
 
                 # Withdraw the amount
                 set_command_by_t_username(user.username, USER_MAIN_MENU_BUTTON)
-                if whitelist_token['symbol'] == BTT_SYMBOL:
+                if whitelist_token['symbol'] == MAIN_SYMBOL:
                     tx = withdraw_tip_top_up(address, withdraw_amount_int)
                 else:
                     tx = withdraw_top_up_erc20_tip(address, withdraw_amount_int, whitelist_token['address'])

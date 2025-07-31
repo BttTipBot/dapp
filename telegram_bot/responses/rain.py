@@ -8,8 +8,8 @@ from db.transactions import record_rain_by_t_username
 from utils.convert import is_int, convert_to_int, human_format
 from db.parameters import get_param
 from db.balances import get_balance_by_t_username
-from constants.parameters import PARAMETER_RAIN_FEE_BTT
-from constants.globals import RAIN_INSUFFICIENT_BALANCE
+from constants.parameters import PARAMETER_RAIN_FEE
+from constants.globals import RAIN_INSUFFICIENT_BALANCE, MAIN_SYMBOL
 from utils.tokens import get_whitelist_token_by_symbol
 
 from .telegram_send import send_text, send_animation
@@ -36,7 +36,7 @@ async def rain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         timeback = '1d'
     elif len(context.args) == 1:
         amount = context.args[0]
-        symbol_name = 'BTT'
+        symbol_name = MAIN_SYMBOL
         timeback = '1d'
     else:
         await send_text(update, 'Usage: /rain <amount> <symbol> [5m/1h/1d]')
@@ -53,7 +53,7 @@ async def rain(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # Check if the user has the sufficient balance
     sender = update.message.from_user
     balance_sender = get_balance_by_t_username(sender.username, whitelist_token['symbol'])
-    fee = int(get_param(PARAMETER_RAIN_FEE_BTT))
+    fee = int(get_param(PARAMETER_RAIN_FEE))
 
     if balance_sender + fee < amount_int and amount_int > 0:
         await send_text(update,
