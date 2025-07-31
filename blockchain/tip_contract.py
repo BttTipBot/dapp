@@ -43,8 +43,25 @@ def tip_call(sender, receiver, amount, pk):
     
     addressReceiver = w3.to_checksum_address(receiver)
     amount_wei = w3.to_wei(amount, 'ether')
-    tx_hash = contract.functions.tip(addressReceiver, amount_wei).build_transaction({"chainId": Chain_id, "from": addressSender, "nonce": nonce, "gasPrice": 50000000000000000})
 
+    # Estimate gas
+    gas_estimate = contract.functions.tip(addressReceiver, amount_wei).estimate_gas({
+        "from": addressSender
+    })
+    
+    # Add 20% buffer to gas estimate
+    gas_with_buffer = int(gas_estimate * 1.2)
+    print(f"Estimated gas: {gas_estimate}, with buffer: {gas_with_buffer}")
+    
+    # Get current gas price
+    gas_price = w3.eth.gas_price
+    tx_hash = contract.functions.tip(addressReceiver, amount_wei).build_transaction({
+        "chainId": Chain_id, 
+        "from": addressSender, 
+        "nonce": nonce, 
+        "gas": gas_with_buffer,
+        "gasPrice": gas_price
+    })
     # Sign transaction
     signed_tx = w3.eth.account.sign_transaction(tx_hash, private_key=pk)
     
@@ -121,8 +138,24 @@ def deposit_tip(amount, address_in, pk):
 
     # Build the transaction
     amount_wei = w3.to_wei(amount, 'ether')
-    tx_hash = contract.functions.deposit().build_transaction({"chainId": Chain_id, "from": addressSender, "nonce": nonce, "value": amount_wei, "gasPrice": 50000000000000000})
 
+    # Estimate gas
+    gas_estimate = contract.functions.deposit().estimate_gas({
+        "from": addressSender,
+        "value": amount_wei
+    })
+    
+    gas_with_buffer = int(gas_estimate * 1.2)
+    gas_price = w3.eth.gas_price
+    
+    tx_hash = contract.functions.deposit().build_transaction({
+        "chainId": Chain_id, 
+        "from": addressSender, 
+        "nonce": nonce, 
+        "value": amount_wei, 
+        "gas": gas_with_buffer,
+        "gasPrice": gas_price
+    })
     # Sign the transaction
     signed_tx = w3.eth.account.sign_transaction(tx_hash, private_key=pk)
 
@@ -167,8 +200,19 @@ def withdraw_tip(amount, address_in, pk):
 
     # Build the transaction
     amount_wei = w3.to_wei(amount, 'ether')
-    tx_hash = contract.functions.withdraw(amount_wei).build_transaction({"chainId": Chain_id, "from": addressSender, "nonce": nonce, "gasPrice": 50000000000000000})
+    
+    # Estimate gas
+    gas_estimate = contract.functions.withdraw(amount_wei).estimate_gas({"from": addressSender})
+    gas_with_buffer = int(gas_estimate * 1.2)
+    gas_price = w3.eth.gas_price
 
+    tx_hash = contract.functions.withdraw(amount_wei).build_transaction({
+        "chainId": Chain_id,
+        "from": addressSender,
+        "nonce": nonce, 
+        "gas": gas_with_buffer,
+        "gasPrice": gas_price
+    })
     # Sign the transaction
     signed_tx = w3.eth.account.sign_transaction(tx_hash, private_key=pk)
 
@@ -214,7 +258,16 @@ def top_up_tip(amount, address_in, pk):
 
     # Build the transaction
     amount_wei = w3.to_wei(amount, 'ether')
-    tx_hash = contract.functions.topUp(amount_wei).build_transaction({"chainId": Chain_id, "from": addressSender, "nonce": nonce, "gasPrice": 50000000000000000})
+    gas_estimate = contract.functions.topUp(amount_wei).estimate_gas({"from": addressSender})
+    gas_with_buffer = int(gas_estimate * 1.2)
+    gas_price = w3.eth.gas_price
+    tx_hash = contract.functions.topUp(amount_wei).build_transaction({
+        "chainId": Chain_id,
+        "from": addressSender,
+        "nonce": nonce,
+        "gas": gas_with_buffer,
+        "gasPrice": gas_price
+    })
 
     # Sign the transaction
     signed_tx = w3.eth.account.sign_transaction(tx_hash, private_key=pk)
@@ -262,11 +315,23 @@ def withdraw_tip_top_up(receiver, amount):
 
     # Initialize address nonce
     addressSender = w3.to_checksum_address(ETH_ACCOUNT_ADDRESS)
-    nonce = w3.eth.get_transaction_count(ETH_ACCOUNT_ADDRESS)
+    nonce = w3.eth.get_transaction_count(addressSender)
     
     addressReceiver = w3.to_checksum_address(receiver)
     amount_wei = w3.to_wei(amount, 'ether')
-    tx_hash = contract.functions.tipTopUp(addressReceiver, amount_wei).build_transaction({"chainId": Chain_id, "from": addressSender, "nonce": nonce, "gasPrice": 50000000000000000})
+    
+    # Build the transaction
+    gas_estimate = contract.functions.tipTopUp(addressReceiver, amount_wei).estimate_gas({"from": addressSender})
+    gas_with_buffer = int(gas_estimate * 1.2)
+    gas_price = w3.eth.gas_price
+
+    tx_hash = contract.functions.tipTopUp(addressReceiver, amount_wei).build_transaction({
+        "chainId": Chain_id,
+        "from": addressSender,
+        "nonce": nonce,
+        "gas": gas_with_buffer,
+        "gasPrice": gas_price
+    })
 
     # Sign transaction
     signed_tx = w3.eth.account.sign_transaction(tx_hash, private_key=ETH_PRIVATE_KEY)
@@ -378,9 +443,20 @@ def deposit_erc20(amount, address_in, pk, token):
     token_address = w3.to_checksum_address(token)
     token_contract = w3.eth.contract(address=token_address, abi=cache_erc20_abi)
     decimals = token_contract.functions.decimals().call()
-
     amount_wei = int(amount * 10**decimals)
-    tx_hash = contract.functions.depositERC20(token_address, amount_wei).build_transaction({"chainId": Chain_id, "from": addressSender, "nonce": nonce, "gasPrice": 50000000000000000})
+    
+    # Estimate gas
+    gas_estimate = contract.functions.depositERC20(token_address, amount_wei).estimate_gas({"from": addressSender})
+    gas_with_buffer = int(gas_estimate * 1.2)
+    gas_price = w3.eth.gas_price
+    
+    tx_hash = contract.functions.depositERC20(token_address, amount_wei).build_transaction({
+        "chainId": Chain_id,
+        "from": addressSender,
+        "nonce": nonce,
+        "gas": gas_with_buffer,
+        "gasPrice": gas_price
+    })
 
     # Sign the transaction
     signed_tx = w3.eth.account.sign_transaction(tx_hash, private_key=pk)
@@ -439,8 +515,19 @@ def withdraw_erc20(amount, address_in, pk, token):
     decimals = token_contract.functions.decimals().call()
 
     amount_wei = int(amount * 10**decimals)
-    tx_hash = contract.functions.withdrawERC20(token_address, amount_wei).build_transaction({"chainId": Chain_id, "from": addressSender, "nonce": nonce, "gasPrice": 50000000000000000})
 
+    # Estimate gas
+    gas_estimate = contract.functions.withdrawERC20(token_address, amount_wei).estimate_gas({"from": addressSender})
+    gas_with_buffer = int(gas_estimate * 1.2)
+    gas_price = w3.eth.gas_price
+
+    tx_hash = contract.functions.withdrawERC20(token_address, amount_wei).build_transaction({
+        "chainId": Chain_id,
+        "from": addressSender,
+        "nonce": nonce,
+        "gas": gas_with_buffer,
+        "gasPrice": gas_price
+    })
     # Sign the transaction
     signed_tx = w3.eth.account.sign_transaction(tx_hash, private_key=pk)
 
@@ -497,9 +584,21 @@ def top_up_erc20(amount, address_in, pk, token):
     # Build the transaction
     token_contract = w3.eth.contract(address=token_address, abi=cache_erc20_abi)
     decimals = token_contract.functions.decimals().call()
-
     amount_wei = int(amount * 10**decimals)
-    tx_hash = contract.functions.topUpERC20(token_address, amount_wei).build_transaction({"chainId": Chain_id, "from": addressSender, "nonce": nonce, "gasPrice": 50000000000000000})
+    
+    #Estimate gas
+    gas_estimate = contract.functions.topUpERC20(token_address, amount_wei).estimate_gas({"from": addressSender})
+    gas_with_buffer = int(gas_estimate * 1.2)
+    gas_price = w3.eth.gas_price
+    nonce = w3.eth.get_transaction_count(addressSender)
+
+    tx_hash = contract.functions.topUpERC20(token_address, amount_wei).build_transaction({
+        "chainId": Chain_id,
+        "from": addressSender,
+        "nonce": nonce,
+        "gas": gas_with_buffer,
+        "gasPrice": gas_price
+    })
 
     # Sign the transaction
     signed_tx = w3.eth.account.sign_transaction(tx_hash, private_key=pk)
@@ -556,9 +655,20 @@ def tip_erc20_call(amount, address_in, receiver, pk, token):
     # Build the transaction
     token_contract = w3.eth.contract(address=token_address, abi=cache_erc20_abi)
     decimals = token_contract.functions.decimals().call()
-
     amount_wei = int(amount * 10**decimals)
-    tx_hash = contract.functions.tipERC20(token_address, receiverAddress, amount_wei).build_transaction({"chainId": Chain_id, "from": addressSender, "nonce": nonce, "gasPrice": 50000000000000000})
+    
+    # Estimate gas
+    gas_estimate = contract.functions.tipERC20(token_address, receiverAddress, amount_wei).estimate_gas({"from": addressSender})
+    gas_with_buffer = int(gas_estimate * 1.2)
+    gas_price = w3.eth.gas_price
+
+    tx_hash = contract.functions.tipERC20(token_address, receiverAddress, amount_wei).build_transaction({
+        "chainId": Chain_id,
+        "from": addressSender,
+        "nonce": nonce,
+        "gas": gas_with_buffer,
+        "gasPrice": gas_price
+    })
 
     # Sign the transaction
     signed_tx = w3.eth.account.sign_transaction(tx_hash, private_key=pk)
@@ -621,10 +731,21 @@ def withdraw_top_up_erc20_tip(receiver, amount, token):
     # Build the transaction
     token_contract = w3.eth.contract(address=token_address, abi=cache_erc20_abi)
     decimals = token_contract.functions.decimals().call()
-
     amount_wei = int(amount * 10**decimals)
-    tx_hash = contract.functions.tipTopUpERC20(token_address, receiverAddress, amount_wei).build_transaction({"chainId": Chain_id, "from": addressSender, "nonce": nonce, "gasPrice": 50000000000000000})
+    
+    # Estimate gas
+    gas_estimate = contract.functions.tipTopUpERC20(token_address, receiverAddress, amount_wei).estimate_gas({"from": addressSender})
+    gas_with_buffer = int(gas_estimate * 1.2)
+    gas_price = w3.eth.gas_price
+    nonce = w3.eth.get_transaction_count(addressSender)
 
+    tx_hash = contract.functions.tipTopUpERC20(token_address, receiverAddress, amount_wei).build_transaction({
+        "chainId": Chain_id,
+        "from": addressSender,
+        "nonce": nonce,
+        "gas": gas_with_buffer,
+        "gasPrice": gas_price
+    })
     # Sign the transaction
     signed_tx = w3.eth.account.sign_transaction(tx_hash, private_key=ETH_PRIVATE_KEY)
 

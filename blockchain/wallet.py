@@ -69,12 +69,23 @@ def transfer_eth(sender, receiver, amount, private_key):
     addressReceiver = w3.to_checksum_address(receiver)
     value = w3.to_wei(amount, "ether")
 
+    # Estimate gas for the transaction
+    gas_estimate = w3.eth.estimate_gas({
+        'to': addressReceiver,
+        'from': sender,
+        'value': value
+    })
+    
+    # Add 20% buffer to gas estimate
+    gas_with_buffer = int(gas_estimate * 1.2)
+    print(f"Estimated gas: {gas_estimate}, with buffer: {gas_with_buffer}")
+
     # Build the transaction
     tx = {
         'nonce': nonce,
         'to': addressReceiver,
         'value': value,
-        'gas': 2000000,
+        'gas': gas_with_buffer,
         'gasPrice': gasPrice,
         'chainId': Chain_id,
     }
