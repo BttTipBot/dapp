@@ -756,3 +756,131 @@ def withdraw_top_up_erc20_tip(receiver, amount, token):
     tx_receipt = w3.eth.wait_for_transaction_receipt(send_tx)
 
     return tx_receipt['transactionHash'].hex()
+
+def admin_set_fee(fee = 5):
+    """
+    Set the fee for the TipBot contract
+    :return: The transaction hash of the transaction
+    """
+    global cache_tipbot_abi
+    # Set the Ethereum Testnet RPC URL
+    ETH_RPC_URL = os.getenv('ETH_RPC_URL')
+
+    # Set the Ethereum Testnet contract address
+    ETH_CONTRACT_ADDRESS = os.getenv('ETH_CONTRACT_ADDRESS')
+
+    # Set the Ethereum Testnet private key
+    ETH_PRIVATE_KEY = os.getenv('ETH_PRIVATE_KEY')
+
+    # Set the Ethereum Testnet account address
+    ETH_ACCOUNT_ADDRESS = os.getenv('ETH_ACCOUNT_ADDRESS')
+
+    # Read the TipBot.json file as a JSON
+    if cache_tipbot_abi is None:
+        print("top_up_erc20: Reading TIPBOT ABI")
+        with open('./blockchain/abi/TipBot.json', 'r') as file:
+            abi = json.load(file)
+            cache_tipbot_abi = abi["abi"]
+
+    # Set the Web3 provider
+    w3 = Web3(Web3.HTTPProvider(ETH_RPC_URL))
+    w3.middleware_onion.inject(geth_poa_middleware, layer=0)
+
+    # initialize the chain id, we need it to build the transaction for replay protection
+    Chain_id = w3.eth.chain_id
+
+    # Set the contract
+    addressContract = w3.to_checksum_address(ETH_CONTRACT_ADDRESS)
+    contract = w3.eth.contract(address=addressContract, abi=cache_tipbot_abi)
+
+    # Initialize address nonce
+    addressSender = w3.to_checksum_address(ETH_ACCOUNT_ADDRESS)
+    nonce = w3.eth.get_transaction_count(addressSender)
+    
+    # Estimate gas
+    gas_estimate = contract.functions.setFee(fee).estimate_gas({"from": addressSender})
+    gas_with_buffer = int(gas_estimate * 1.2)
+    gas_price = w3.eth.gas_price
+    
+    # Build the transaction
+    tx_hash = contract.functions.setFee(fee).build_transaction({
+        "chainId": Chain_id,
+        "from": addressSender,
+        "nonce": nonce,
+        "gas": gas_with_buffer,
+        "gasPrice": gas_price
+    })
+    # Sign the transaction
+    signed_tx = w3.eth.account.sign_transaction(tx_hash, private_key=ETH_PRIVATE_KEY)
+
+    # Send the transaction
+    send_tx = w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+
+    # Wait for the transaction receipt
+    tx_receipt = w3.eth.wait_for_transaction_receipt(send_tx)
+
+    return tx_receipt['transactionHash'].hex()
+    
+def admin_set_TopUp_address():
+    """
+    Set the fee for the TipBot contract
+    :return: The transaction hash of the transaction
+    """
+    global cache_tipbot_abi
+    # Set the Ethereum Testnet RPC URL
+    ETH_RPC_URL = os.getenv('ETH_RPC_URL')
+
+    # Set the Ethereum Testnet contract address
+    ETH_CONTRACT_ADDRESS = os.getenv('ETH_CONTRACT_ADDRESS')
+
+    # Set the Ethereum Testnet private key
+    ETH_PRIVATE_KEY = os.getenv('ETH_PRIVATE_KEY')
+
+    # Set the Ethereum Testnet account address
+    ETH_ACCOUNT_ADDRESS = os.getenv('ETH_ACCOUNT_ADDRESS')
+
+    # Read the TipBot.json file as a JSON
+    if cache_tipbot_abi is None:
+        print("top_up_erc20: Reading TIPBOT ABI")
+        with open('./blockchain/abi/TipBot.json', 'r') as file:
+            abi = json.load(file)
+            cache_tipbot_abi = abi["abi"]
+
+    # Set the Web3 provider
+    w3 = Web3(Web3.HTTPProvider(ETH_RPC_URL))
+    w3.middleware_onion.inject(geth_poa_middleware, layer=0)
+
+    # initialize the chain id, we need it to build the transaction for replay protection
+    Chain_id = w3.eth.chain_id
+
+    # Set the contract
+    addressContract = w3.to_checksum_address(ETH_CONTRACT_ADDRESS)
+    contract = w3.eth.contract(address=addressContract, abi=cache_tipbot_abi)
+
+    # Initialize address nonce
+    addressSender = w3.to_checksum_address(ETH_ACCOUNT_ADDRESS)
+    nonce = w3.eth.get_transaction_count(addressSender)
+    
+    # Estimate gas
+    gas_estimate = contract.functions.setTopUpAddress(addressSender).estimate_gas({"from": addressSender})
+    gas_with_buffer = int(gas_estimate * 1.2)
+    gas_price = w3.eth.gas_price
+    
+    # Build the transaction
+    tx_hash = contract.functions.setTopUpAddress(addressSender).build_transaction({
+        "chainId": Chain_id,
+        "from": addressSender,
+        "nonce": nonce,
+        "gas": gas_with_buffer,
+        "gasPrice": gas_price
+    })
+    # Sign the transaction
+    signed_tx = w3.eth.account.sign_transaction(tx_hash, private_key=ETH_PRIVATE_KEY)
+
+    # Send the transaction
+    send_tx = w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+
+    # Wait for the transaction receipt
+    tx_receipt = w3.eth.wait_for_transaction_receipt(send_tx)
+
+    return tx_receipt['transactionHash'].hex()

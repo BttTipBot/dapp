@@ -102,7 +102,8 @@ def top_up_balance_by_t_username(tx, t_username, amount, currency=MAIN_SYMBOL):
 
 def withdraw_balance_by_t_username(tx, t_username, amount, currency=MAIN_SYMBOL):
     # Record the top up in the HISTORY collection
-    record_transaction_by_t_username(t_username, -10000, f"🏧⛽ withdraw fee", MAIN_SYMBOL)
+    fee = int(get_param(PARAMETER_TIP_FEE))
+    record_transaction_by_t_username(t_username, -fee, f"🏧⛽ withdraw fee", MAIN_SYMBOL)
     record_transaction_by_t_username(t_username, -amount, '🏧 withdraw ' + get_short_tx(tx), currency)
     record_global_top_up_by_t_username(t_username, -amount, currency)
 
@@ -117,7 +118,7 @@ def record_tip_by_t_username(t_username_sender, t_username_receiver, amount, cur
         record_welcome_bonus_by_t_username(t_username_sender)
 
     # balance_sender = get_balance_by_t_username(t_username_sender, currency)
-    fee = int(get_param(PARAMETER_TIP_FEE))
+    fee = get_param(PARAMETER_TIP_FEE)
 
     # if balance_sender + fee < amount:
     #     return TIP_INSUFFICIENT_BALANCE.format(balance=balance_sender, max=balance_sender)

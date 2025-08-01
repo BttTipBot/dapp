@@ -47,6 +47,7 @@ from .responses.howto import how_to_deposit, how_to_top_up
 from .responses.burn import BurnOnChain, burn, trigger_burn
 from .responses.dice import dice
 from .responses.broadcast import broadcast
+from .responses.admin import admin_PUT_fee, admin_set_TOP_UP_address
 
 # Load the environment variables
 load_dotenv()
@@ -81,6 +82,8 @@ def run_bot_telegram() -> None:
     application.add_handler(CommandHandler('history', history))
     application.add_handler(CommandHandler('howtodeposit', how_to_deposit))
     application.add_handler(CommandHandler('howtotopup', how_to_top_up))
+    application.add_handler(CommandHandler('adminPUTfee', admin_PUT_fee))
+    application.add_handler(CommandHandler('adminSETtopupaddress', admin_set_TOP_UP_address))
 
     # Register the tip function
     application.add_handler(CommandHandler('tip', tip))

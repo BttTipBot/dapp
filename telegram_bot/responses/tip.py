@@ -61,14 +61,14 @@ async def get_input_arguments(update, context):
         symbol_name = MAIN_SYMBOL
         
         if update.message.reply_to_message is None:
-            await send_text(update, 'Usage: /tip <amount> <symbol> @user')
+            await send_text(update, 'Usage: /tip amount symbol @user')
             return
         else:
             reply_sender = update.message.reply_to_message.from_user
             receiver = reply_sender.username
     else:
         print("context.args", context.args)
-        await send_text(update, 'Usage: /tip <amount> <symbol> @user')
+        await send_text(update, 'Usage: /tip amount symbol @user')
         return
 
     if is_int(amount) == False:
