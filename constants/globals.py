@@ -1,4 +1,4 @@
-MAIN_SYMBOL = 'COTI'
+MAIN_SYMBOL = 'BTT'
 
 
 USER_NOT_FOUND = "User not found! Call /start to register."
